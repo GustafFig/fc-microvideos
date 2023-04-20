@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  micro-videos:
+    image: "codeflix_micro_videos"
+    build:
+      dockerfile: "./Dockerfile"
+      context: .
+    container_name: codeflix_micro_videos
+    volumes:
+      - .:/home/python/app
