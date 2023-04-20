@@ -1,9 +1,45 @@
-from dataclasses import is_dataclass, FrozenInstanceError
+from abc import ABC
+from dataclasses import is_dataclass, FrozenInstanceError, dataclass
 from unittest import TestCase
 from unittest.mock import patch
 import uuid
 
-from src.__seedwork.domain.value_objects import UniqueEntityId, InvalidUUidException
+from src.__seedwork.domain.value_objects import UniqueEntityId, InvalidUUidException, ValueObject
+
+@dataclass(frozen=True)
+class StubProp(ValueObject):
+    prop: str
+
+@dataclass(frozen=True)
+class StubTwoProps(ValueObject):
+    prop1: str
+    prop2: str
+
+class TestValueObjectUnit(TestCase):
+    def test_if_value_object_is_a_dataclass(self):
+        self.assertTrue(is_dataclass(ValueObject))
+    
+    def test_if_value_object_is_a_abc(self):
+        self.assertIsInstance(ValueObject(), ABC)
+
+    def test_init_prop(self):
+        vo1 = StubProp(prop="value")
+        vo2 = StubTwoProps(prop1="value1", prop2="value2")
+        self.assertEqual(vo1.prop, "value")
+        self.assertEqual(vo2.prop1, "value1")
+
+    def test_convert_to_string(self):
+        vo1 = StubProp(prop="value")
+        vo2 = StubTwoProps(prop1="value1", prop2="value2")
+
+        self.assertEqual(vo1.prop, str(vo1))
+        self.assertEqual('{"prop1": "value1", "prop2": "value2"}', str(vo2))
+
+    def test_is_immutaboe(self):
+        with self.assertRaises(FrozenInstanceError) as assert_error:
+            vo1 = StubProp(prop="value")
+            vo1.prop = "new value" # type: ignore
+
 
 class TestUniqueEntityIdUnit(TestCase):
     def test_if_is_a_dataclass(self):
@@ -50,4 +86,9 @@ class TestUniqueEntityIdUnit(TestCase):
     def test_is_immutable(self):
         with self.assertRaises(FrozenInstanceError) as assert_error:
             value_object = UniqueEntityId()
-            value_object.id = 'asdfasdf'
+            value_object.id = 'asdfasdf' # type: ignore
+
+    def test_convert_to_str(self):
+        value_object = UniqueEntityId()
+        self.assertEqual(value_object.id, str(value_object))
+        self.assertEqual(value_object.id, repr(value_object))

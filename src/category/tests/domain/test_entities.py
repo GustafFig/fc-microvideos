@@ -22,5 +22,3 @@ class TestCategory(unittest.TestCase):
         self.assertEqual(category.is_active, False)
         self.assertEqual(category.description, "First1")
         self.assertEqual(category.created_at.timestamp(), created_at.timestamp())
-
-        
