@@ -11,8 +11,8 @@ class ValueObject(ABC):
         if isinstance(other, ValueObject):
             pass
         else:
-            raise NotImplementedError(f"ValueObject cannot be compared equally with {type(other)}")
-
+            raise NotImplementedError(
+                f"ValueObject cannot be compared equally with {type(other)}")
 
     def __str__(self) -> str:
         fields_name = [field.name for field in fields(self)]
@@ -24,7 +24,7 @@ class ValueObject(ABC):
 @dataclass(frozen=True)
 class UniqueEntityId(ValueObject):
 
-    id: str = field(default_factory=lambda : str(uuid.uuid4()))
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
     def __post_init__(self):
         # garante que sempre seja uma string

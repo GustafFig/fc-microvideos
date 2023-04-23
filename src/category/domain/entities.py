@@ -4,6 +4,8 @@ import typing as t
 import uuid
 
 # O frozen evita o comportamento anêmico com as entidades
+
+
 @dataclass(kw_only=True, frozen=True)
 class Category:
 

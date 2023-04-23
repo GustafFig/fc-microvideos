@@ -17,8 +17,10 @@ class TestCategory(unittest.TestCase):
         self.assertIsInstance(category.created_at, dt.datetime)
 
         created_at = dt.datetime.now() - dt.timedelta(days=-2)
-        category = Category(name="Cat2", description="First1", is_active=False, created_at=created_at)
+        category = Category(name="Cat2", description="First1",
+                            is_active=False, created_at=created_at)
         self.assertEqual(category.name, 'Cat2')
         self.assertEqual(category.is_active, False)
         self.assertEqual(category.description, "First1")
-        self.assertEqual(category.created_at.timestamp(), created_at.timestamp())
+        self.assertEqual(category.created_at.timestamp(),
+                         created_at.timestamp())
