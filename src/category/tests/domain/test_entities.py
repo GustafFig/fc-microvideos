@@ -24,3 +24,32 @@ class TestCategory(unittest.TestCase):
         self.assertEqual(category.description, "First1")
         self.assertEqual(category.created_at.timestamp(),
                          created_at.timestamp())
+
+    def test_category_update(self):
+        category = Category(name="Cat1")
+        category.update(name="Cat2", description="Description")
+
+        assert category.name == "Cat2"
+        assert category.description == "Description"
+
+        category.update(name="Cat3", description="Description3")
+        assert category.name == "Cat3"
+        assert category.description == "Description3"
+
+    def test_category_activate(self):
+        category = Category(name="Cat1", is_active=False)
+
+        assert category.is_active == False
+        category.activate()
+        assert category.is_active == True
+        category.activate()
+        assert category.is_active == True
+
+    def test_category_inactivate(self):
+        category = Category(name="Cat1", is_active=True)
+
+        assert category.is_active == True
+        category.inactivate()
+        assert category.is_active == False
+        category.inactivate()
+        assert category.is_active == False
