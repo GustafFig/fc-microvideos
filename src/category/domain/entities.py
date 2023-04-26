@@ -5,8 +5,6 @@ import typing as t
 from __seedwork.domain.entities import Entity, ToggleIsActive
 
 # O frozen evita o comportamento anêmico com as entidades
-
-
 @dataclass(kw_only=True, frozen=True, slots=True)
 class Category(Entity, ToggleIsActive):
 
