@@ -31,7 +31,7 @@ class ValidatorRules:
             raise ValidationException(f"The {self.prop} must be a string")
         return self
     
-    def max_len(self, size: int):
+    def max_length(self, size: int):
         """Test max size of string"""
         if self.value is not None and len(self.value) > size:
             raise ValidationException(

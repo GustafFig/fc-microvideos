@@ -65,7 +65,7 @@ class TestValidatorRulesUnit(unittest.TestCase):
         i = {"value": "t" * 6, "prop": "field"}
         msg = f"value = {i['value']}, prop = {i['prop']}"
         with self.assertRaises(ValidationException, msg=msg) as error:
-            ValidatorRules.values(i["value"], i["prop"]).max_len(5)
+            ValidatorRules.values(i["value"], i["prop"]).max_length(5)
         self.assertEqual(
             f"The {i['prop']} length must be equal or lower than 5",
             error.exception.args[0]
@@ -75,7 +75,7 @@ class TestValidatorRulesUnit(unittest.TestCase):
         size = 5
         i = {"value": "t" * size, "prop": "field1"}    
         try:
-            ValidatorRules.values(i["value"], i["prop"]).max_len(size)
+            ValidatorRules.values(i["value"], i["prop"]).max_length(size)
         except ValidationException as err:
             self.fail(err.args[0])
 
@@ -104,3 +104,62 @@ class TestValidatorRulesUnit(unittest.TestCase):
                 ValidatorRules.values(i["value"], i["prop"]).boolean()
             except ValidationException as err:
                 self.fail(err.args[0])
+
+    def test_throw_a_validation_exception_when_combine_two_or_more_rules(self):
+        with self.assertRaises(ValidationException) as assert_error:
+            ValidatorRules.values(
+                None,
+                'prop'
+            ).required().string().max_length(5)
+        self.assertEqual(
+            'The prop is required',
+            assert_error.exception.args[0],
+        )
+
+        with self.assertRaises(ValidationException) as assert_error:
+            ValidatorRules.values(
+                5,
+                'prop'
+            ).required().string().max_length(5)
+        self.assertEqual(
+            'The prop must be a string',
+            assert_error.exception.args[0],
+        )
+
+        with self.assertRaises(ValidationException) as assert_error:
+            ValidatorRules.values(
+                "t" * 6,
+                'prop'
+            ).required().string().max_length(5)
+        self.assertEqual(
+            'The prop length must be equal or lower than 5',
+            assert_error.exception.args[0],
+        )
+
+        with self.assertRaises(ValidationException) as assert_error:
+            ValidatorRules.values(
+                None,
+                'prop'
+            ).required().boolean()
+        self.assertEqual(
+            'The prop is required',
+            assert_error.exception.args[0],
+        )
+
+        with self.assertRaises(ValidationException) as assert_error:
+            ValidatorRules.values(
+                5,
+                'prop'
+            ).required().boolean()
+        self.assertEqual(
+            'The prop must be a boolean',
+            assert_error.exception.args[0],
+        )
+
+    def test_valid_cases_for_combination_between_rules(self):
+        ValidatorRules('test', 'prop').required().string()
+        ValidatorRules("t" * 5, 'prop').required().string().max_length(5)
+
+        ValidatorRules(True, 'prop').required().boolean()
+        ValidatorRules(False, 'prop').required().boolean()
+        self.assertTrue(True)  # pylint: disable=redundant-unittest-assert
