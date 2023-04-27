@@ -1,5 +1,5 @@
 {
-    "python.analysis.typeCheckingMode": "strict",
+    "python.analysis.typeCheckingMode": "basic",
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
     "python.formatting.provider": "autopep8",
@@ -18,8 +18,14 @@
         "-s",
         "./src",
         "-p",
-        "test_*.py"
+        "test_*.py",
     ],
-    "python.testing.pytestEnabled": false,
-    "python.testing.unittestEnabled": true
+    "python.testing.pytestArgs": [
+        "src",
+        "--ignore",
+        "__pypackages__",
+        "-s"
+    ],
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false
 }

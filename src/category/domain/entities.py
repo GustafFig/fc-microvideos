@@ -10,6 +10,8 @@ from __seedwork.domain.entities import Entity, ToggleIsActive
 from __seedwork.domain.validators import ValidatorRules
 
 # O frozen evita o comportamento anêmico com as entidades
+
+
 @dataclass(kw_only=True, frozen=True, slots=True)
 class Category(Entity, ToggleIsActive):
     """Define the category entity at the domain"""
@@ -25,7 +27,7 @@ class Category(Entity, ToggleIsActive):
             description=kwargs.get("description"),
             is_active=kwargs.get("is_active"),
         )
-        super(Category, cls).__new__(cls)
+        return super(Category, cls).__new__(cls)
 
     def update(self, *, name: str, description: t.Optional[str]) -> None:
         object.__setattr__(self, 'name', name)
@@ -41,13 +43,14 @@ class Category(Entity, ToggleIsActive):
 ErrorFields = t.Dict[str, t.List[str]]
 PropsValidated = t.TypeVar('PropsValidated')
 
+
 class ValidatorFieldsInterface(ABC, t.Generic[PropsValidated]):
     """Define the format the type of a Validator in the domain"""
-    errors: ErrorFields = None
-    validated_data = PropsValidated
+    errors: ErrorFields = t.Optional[None]
+    validated_data: t.Optional[PropsValidated] = None
 
     @abstractmethod
-    def validate(self, data: t.Any):
+    def validate(self, data: t.Any) -> bool:
         raise NotImplementedError()
 
 

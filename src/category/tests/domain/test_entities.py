@@ -11,6 +11,7 @@ class TestCategory(unittest.TestCase):
 
     def test_category_constructor(self):
         category = Category(name="Cat1")
+        self.assertIsNotNone(category)
         self.assertEqual(category.name, "Cat1")
         self.assertEqual(category.description, None)
         self.assertEqual(category.is_active, True)
