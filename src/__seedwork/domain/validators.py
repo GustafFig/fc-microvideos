@@ -1,10 +1,13 @@
-"""Module for define an declarator rules for Validation of the project domain
+"""
+    Module for define an declarator rules for Validation of the project domain
     It is an internal library
 """
-
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Generic, List, TypeVar, Dict, Optional
+from rest_framework.fields import BooleanField, CharField
 
+from rest_framework.serializers import Serializer
 from .exceptions import ValidationException
 
 
@@ -15,7 +18,7 @@ class ValidatorRules:
     prop: str
 
     @staticmethod
-    def values(value: Any, prop: str) ->  'ValidatorRules':
+    def values(value: Any, prop: str) -> 'ValidatorRules':
         """Create the Validator Rules"""
         return ValidatorRules(value, prop)
 
@@ -45,3 +48,59 @@ class ValidatorRules:
                 f"The {self.prop} must be a boolean"
             )
         return self
+
+
+ErrorFields = Dict[str, List[str]]
+PropsValidated = TypeVar('PropsValidated', Dict, Any)
+
+
+@dataclass(slots=True)
+class ValidatorFieldsInterface(ABC, Generic[PropsValidated]):
+    """Define the format the type of a Validator in the domain"""
+    errors: Optional[ErrorFields] = None
+    validated_data: Optional[PropsValidated] = None
+
+    @abstractmethod
+    def validate(self, data: Any) -> bool:
+        raise NotImplementedError()
+
+
+@dataclass(slots=True)
+class DRFValidator(ValidatorFieldsInterface[PropsValidated], ABC):
+    """Define a domain validator based on Django Rest Framework"""
+
+    def validate(self, data: Serializer) -> bool:
+        if data.is_valid():
+            self.validated_data = data.validated_data # type: ignore
+            return True
+
+        self.errors = {
+            key: [str(err) for err in errors]
+            for key, errors in data.errors.items()
+        }
+        return False
+
+
+class StrictBooleanField(BooleanField):
+    """Accept only True, False and None.
+        In case of None it needs to be explicit liberate by allow_null
+    """
+
+    def to_internal_value(self, data):
+        if data is True:
+            return True
+        if data is False:
+            return False
+        if data is None and self.allow_null:
+            return None
+        self.fail('invalid', input=data)
+        return bool(data)
+
+
+class StrictCharField(CharField):
+
+    def to_internal_value(self, data):
+        if not isinstance(data, str):
+            self.fail('invalid')
+
+        return super().to_internal_value(data)

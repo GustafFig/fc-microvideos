@@ -39,7 +39,8 @@
       "extensions": [
         "ms-python.python",
         "sourcery.sourcery",
-        "ms-python.pylint"
+        "ms-python.pylint",
+        "eamodio.gitlens"
       ],
       "settings": {
         "python.pythonPath": "/usr/local/bin/python"
