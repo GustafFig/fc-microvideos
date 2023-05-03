@@ -1,15 +1,18 @@
 from dataclasses import is_dataclass
 import datetime as dt
 import unittest
+from unittest.mock import patch
 
 from category.domain.entities import Category
 
 
+@patch.object(Category, 'validate')
 class TestCategory(unittest.TestCase):
-    def test_if_category_is_a_dataclass(self):
+
+    def test_if_category_is_a_dataclass(self, _validator):
         self.assertTrue(is_dataclass(Category))
 
-    def test_category_constructor(self):
+    def test_category_constructor(self, _validator):
         category = Category(name="Cat1")
         self.assertIsNotNone(category)
         self.assertEqual(category.name, "Cat1")
@@ -26,7 +29,7 @@ class TestCategory(unittest.TestCase):
         self.assertEqual(category.created_at.timestamp(),
                          created_at.timestamp())
 
-    def test_category_update(self):
+    def test_category_update(self, _validator):
         category = Category(name="Cat1")
         category.update(name="Cat2", description="Description")
 
@@ -37,7 +40,7 @@ class TestCategory(unittest.TestCase):
         assert category.name == "Cat3"
         assert category.description == "Description3"
 
-    def test_category_activate(self):
+    def test_category_activate(self, _validator):
         category = Category(name="Cat1", is_active=False)
 
         assert category.is_active == False
@@ -46,7 +49,7 @@ class TestCategory(unittest.TestCase):
         category.activate()
         assert category.is_active == True
 
-    def test_category_inactivate(self):
+    def test_category_inactivate(self, _validator):
         category = Category(name="Cat1", is_active=True)
 
         assert category.is_active == True

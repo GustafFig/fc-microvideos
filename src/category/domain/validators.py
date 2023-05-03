@@ -13,7 +13,7 @@ class CategoryRules(Serializer):
         required=False, allow_null=True, allow_black=True
     )
     is_active = StrictBooleanField(required=False)
-    created_at = DateTimeField(required=True)
+    created_at = DateTimeField(required=False)
 
 
 class CategoryValidator(DRFValidator[Dict]):
