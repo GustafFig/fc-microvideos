@@ -8,3 +8,10 @@ class InvalidUUidException(Exception):
 
 class ValidationException(Exception):
     """The Exception for domain validations"""
+
+    def __init__(self, error) -> None:
+        self.error = error
+        super().__init__('Validation Error')
+
+class ValidationRulesException(Exception):
+    """The Exception for ValidationRulesException"""

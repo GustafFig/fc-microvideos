@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 from rest_framework.serializers import Serializer
 
 from __seedwork.domain.validators import (
-    DRFValidator, ValidatorFieldsInterface, ValidatorRules, ValidationException
+    DRFValidator, ValidatorFieldsInterface, ValidatorRules, ValidationRulesException
 )
 
 
@@ -29,7 +29,7 @@ class TestValidatorRulesUnit(unittest.TestCase):
         ]
         for i in invalid_data:
             msg = f"value = {i['value']}, prop = {i['prop']}"
-            with self.assertRaises(ValidationException, msg=msg) as error:
+            with self.assertRaises(ValidationRulesException, msg=msg) as error:
                 ValidatorRules.values(i["value"], str(i["prop"])).required()
             self.assertEqual(
                 f"The {i['prop']} is required", error.exception.args[0])
@@ -45,7 +45,7 @@ class TestValidatorRulesUnit(unittest.TestCase):
         for i in valid_data:
             try:
                 ValidatorRules.values(i["value"], i["prop"]).required()
-            except ValidationException as err:
+            except ValidationRulesException as err:
                 self.fail(err.args[0])
 
     def test_string_raise_on_invalid_rule(self):
@@ -57,7 +57,7 @@ class TestValidatorRulesUnit(unittest.TestCase):
         ]
         for i in invalid_data:
             msg = f"value = {i['value']}, prop = {i['prop']}"
-            with self.assertRaises(ValidationException, msg=msg) as error:
+            with self.assertRaises(ValidationRulesException, msg=msg) as error:
                 ValidatorRules.values(i["value"], i["prop"]).string()
             self.assertEqual(
                 f"The {i['prop']} must be a string", error.exception.args[0])
@@ -71,13 +71,13 @@ class TestValidatorRulesUnit(unittest.TestCase):
         for i in valid_data:
             try:
                 ValidatorRules.values(i["value"], i["prop"]).string()
-            except ValidationException as err:
+            except ValidationRulesException as err:
                 self.fail(err.args[0])
 
     def test_max_len_raise_on_invalid_rule(self):
         i = {"value": "t" * 6, "prop": "field"}
         msg = f"value = {i['value']}, prop = {i['prop']}"
-        with self.assertRaises(ValidationException, msg=msg) as error:
+        with self.assertRaises(ValidationRulesException, msg=msg) as error:
             ValidatorRules.values(i["value"], i["prop"]).max_length(5)
         self.assertEqual(
             f"The {i['prop']} length must be equal or lower than 5",
@@ -89,7 +89,7 @@ class TestValidatorRulesUnit(unittest.TestCase):
         i = {"value": "t" * size, "prop": "field1"}
         try:
             ValidatorRules.values(i["value"], i["prop"]).max_length(size)
-        except ValidationException as err:
+        except ValidationRulesException as err:
             self.fail(err.args[0])
 
     def test_boolean_raise_on_invalid_rule(self):
@@ -102,7 +102,7 @@ class TestValidatorRulesUnit(unittest.TestCase):
         ]
         for i in invalid_data:
             msg = f"value = {i['value']}, prop = {i['prop']}"
-            with self.assertRaises(ValidationException, msg=msg) as error:
+            with self.assertRaises(ValidationRulesException, msg=msg) as error:
                 ValidatorRules.values(i["value"], i["prop"]).boolean()
             self.assertEqual(
                 f"The {i['prop']} must be a boolean", error.exception.args[0])
@@ -116,11 +116,11 @@ class TestValidatorRulesUnit(unittest.TestCase):
         for i in valid_data:
             try:
                 ValidatorRules.values(i["value"], i["prop"]).boolean()
-            except ValidationException as err:
+            except ValidationRulesException as err:
                 self.fail(err.args[0])
 
     def test_throw_a_validation_exception_when_combine_two_or_more_rules(self):
-        with self.assertRaises(ValidationException) as assert_error:
+        with self.assertRaises(ValidationRulesException) as assert_error:
             ValidatorRules.values(
                 None,
                 'prop'
@@ -130,7 +130,7 @@ class TestValidatorRulesUnit(unittest.TestCase):
             assert_error.exception.args[0],
         )
 
-        with self.assertRaises(ValidationException) as assert_error:
+        with self.assertRaises(ValidationRulesException) as assert_error:
             ValidatorRules.values(
                 5,
                 'prop'
@@ -140,7 +140,7 @@ class TestValidatorRulesUnit(unittest.TestCase):
             assert_error.exception.args[0],
         )
 
-        with self.assertRaises(ValidationException) as assert_error:
+        with self.assertRaises(ValidationRulesException) as assert_error:
             ValidatorRules.values(
                 "t" * 6,
                 'prop'
@@ -150,7 +150,7 @@ class TestValidatorRulesUnit(unittest.TestCase):
             assert_error.exception.args[0],
         )
 
-        with self.assertRaises(ValidationException) as assert_error:
+        with self.assertRaises(ValidationRulesException) as assert_error:
             ValidatorRules.values(
                 None,
                 'prop'
@@ -160,7 +160,7 @@ class TestValidatorRulesUnit(unittest.TestCase):
             assert_error.exception.args[0],
         )
 
-        with self.assertRaises(ValidationException) as assert_error:
+        with self.assertRaises(ValidationRulesException) as assert_error:
             ValidatorRules.values(
                 5,
                 'prop'

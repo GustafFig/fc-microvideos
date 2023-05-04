@@ -8,7 +8,7 @@ from typing import Any, Generic, List, TypeVar, Dict, Optional
 from rest_framework.fields import BooleanField, CharField
 
 from rest_framework.serializers import Serializer
-from .exceptions import ValidationException
+from .exceptions import ValidationRulesException
 
 
 @dataclass(slots=True, frozen=True)
@@ -25,26 +25,26 @@ class ValidatorRules:
     def required(self):
         """Test if value is not None, neither empty string"""
         if self.value is None or self.value == "":
-            raise ValidationException(f'The {self.prop} is required')
+            raise ValidationRulesException(f'The {self.prop} is required')
         return self
 
     def string(self):
         """Test if value is of type str"""
         if self.value is not None and not isinstance(self.value, str):
-            raise ValidationException(f"The {self.prop} must be a string")
+            raise ValidationRulesException(f"The {self.prop} must be a string")
         return self
 
     def max_length(self, size: int):
         """Test max size of string"""
         if self.value is not None and len(self.value) > size:
-            raise ValidationException(
+            raise ValidationRulesException(
                 f"The {self.prop} length must be equal or lower than {size}"
             )
         return self
 
     def boolean(self):
         if all(self.value is not obj for obj in [None, True, False]):
-            raise ValidationException(
+            raise ValidationRulesException(
                 f"The {self.prop} must be a boolean"
             )
         return self

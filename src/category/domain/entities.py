@@ -27,6 +27,7 @@ class Category(Entity, ToggleIsActive):
     def update(self, *, name: str, description: t.Optional[str]) -> None:
         object.__setattr__(self, 'name', name)
         object.__setattr__(self, 'description', description)
+        self.validate()
 
     def validate(self):
         """Validate the Category entity"""

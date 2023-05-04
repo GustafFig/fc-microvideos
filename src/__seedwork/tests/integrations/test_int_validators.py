@@ -62,10 +62,10 @@ class TestStrictCharField(unittest.TestCase):
 class TestStrictBooleanField(unittest.TestCase):
 
     class StubDFVStrictBooleanFieldNonNull(Serializer):
-        active = BooleanField()
+        active = StrictBooleanField()
 
     class StubDFVStrictBooleanFieldNonNullable(Serializer):
-        active = BooleanField(allow_null=True)
+        active = StrictBooleanField(allow_null=True)
 
     def test_it_invalid_for_non_string_values(self):
         invalid_data = [
@@ -77,12 +77,17 @@ class TestStrictBooleanField(unittest.TestCase):
             {"active": 1.1},
             {"active": set()},
         ]
-        for invalid in invalid_data:
+        for index, invalid in enumerate(invalid_data):
             serializer = self.StubDFVStrictBooleanFieldNonNull(data=invalid)
-            self.assertFalse(serializer.is_valid())
-            self.assertEqual({}, serializer.validated_data)
+
+            assert_error_message = f"Row: {index}, invalida_data: {invalid}"
+            self.assertFalse(serializer.is_valid(), assert_error_message)
+            self.assertEqual({}, serializer.validated_data,
+                             assert_error_message)
             self.assertEqual(serializer.errors["active"][0],
-                             ErrorDetail("Must be a valid boolean.", "invalid"))
+                             ErrorDetail(
+                                 "Must be a valid boolean.", "invalid"),
+                             assert_error_message)
 
     def test_it_when_None_is_passed(self):
         data = {"active": None}
@@ -98,7 +103,8 @@ class TestStrictBooleanField(unittest.TestCase):
             data=data)  # type: ignore
         self.assertTrue(serializer.is_valid())
         self.assertEqual(serializer.errors, {})
-        self.assertEqual(serializer.validated_data["active"], None)
+        validated_data = serializer.validated_data or {}
+        self.assertEqual(validated_data["active"], None)
 
     def test_valid_booleans(self):
         valid_data = [
@@ -110,6 +116,7 @@ class TestStrictBooleanField(unittest.TestCase):
                 data=valid)  # type: ignore
             self.assertTrue(serializer.is_valid())
             # type: ignore
+            validated_data = serializer.validated_data or {}
             self.assertEqual(
-                serializer.validated_data["active"], valid["active"])
+                validated_data["active"], valid["active"])
             self.assertEqual(serializer.errors, {})
