@@ -64,6 +64,13 @@ class ValidatorFieldsInterface(ABC, Generic[PropsValidated]):
     def validate(self, data: Any) -> bool:
         raise NotImplementedError()
 
+@dataclass(slots=True)
+class ValidatorRulesValidator(ABC, Generic[PropsValidated]):
+    """Define a domain validator based on ValidatorRules in-project class"""
+    @abstractmethod
+    def validate(self, data: Dict) -> bool:
+        raise NotImplementedError()
+
 
 @dataclass(slots=True)
 class DRFValidator(ValidatorFieldsInterface[PropsValidated], ABC):
