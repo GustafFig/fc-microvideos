@@ -126,6 +126,13 @@ class SearchParams(Generic[Filters], ABC):
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class SearchResult(Generic[Filters, ET], ABC):
+    """
+        Study Note: here I passed SearchParams as an dependency of search result.
+        It is not exaclity a problem but in general it's better to have the more flexible code
+        A general (flexible) rule would be make use Inherit to make the coupling, not the typing.
+        So the "ABC domain" uses some kind of "Atomic design" with a high flexible behaviour
+        stiffened by the domain's implementation
+    """
 
     items: List[ET]
     total: int
@@ -149,25 +156,39 @@ class SearchResult(Generic[Filters, ET], ABC):
         }
 
 
+Input = TypeVar('Input')
+Output = TypeVar('Output')
+
 class SearchableRepositoryInterface(
-    Generic[Filters, ET],
+    Generic[Input, Output, ET],
     RepositoryInterface[ET],
     ABC,
 ):
+    """
+    Study Note: pass SearchParams[Filters] is not good, because I am going to need to passe
+        SearchParams[SomeType] through all app. So it's better to receive
+        some definables'n aggregate Input and Output.
+        With that the class get a Bonus of having others inputs and outputs types for searching
+    """
 
     sortable_fields: List[str] = []
 
     @abstractmethod
-    def search(self, params: SearchParams[Filters]) -> SearchResult[Filters, ET]:
+    def search(self, params: Input) -> Output:
         raise NotImplementedError()
 
 
 class InMemorySearchableRepositoryInterface(
     Generic[Filters, ET],
-    SearchableRepositoryInterface[Filters, ET],
+    SearchableRepositoryInterface[SearchParams[Filters], SearchResult[Filters, ET], ET],
     InMemoryRepository,
     ABC,
 ):
+    """
+    Study Note: Here the SearchParams and SearchResult are defined because search is implemented
+        using type like it. So it's good to pass it in generic of more flexible base class
+        and method's typing.
+    """
 
     def search(self, input_params: SearchParams[Filters]) -> SearchResult[Filters, ET]:
         items_filtered = self._apply_filter(self.items, input_params.filters)
