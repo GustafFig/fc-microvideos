@@ -15,8 +15,20 @@ class InMemoryCategoryRepository(CategoryRepository, InMemorySearchableRepositor
     ) -> List[Category]:
         if filter_param:
             filtering = filter(
-                    lambda item: filter_param in item.name.lower(),
-                    items,
-                )
+                lambda item: filter_param in item.name.lower(),
+                items,
+            )
             return list(filtering)
         return items
+
+    def _apply_sort(
+        self,
+        items: List[Category],
+        sort: str | None,
+        sort_dir: str | None
+    ) -> List[Category]:
+        return sorted(
+            items,
+            key=lambda item: getattr(item, sort or "created_at"),
+            reverse=sort_dir == 'desc'
+        )

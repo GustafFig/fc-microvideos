@@ -118,7 +118,7 @@ class TestInMemoryCategoryRepository(unittest.TestCase):
         self.assertEqual(output.last_page, 1)
         self.assertEqual(output.total, 1)
 
-    def test_its_search_default_sort_by_created_at(self):
+    def test_its_search_default_sort_by_created_at_in_desc_direction(self):
         now = datetime.datetime.now()
         categories = list(map(
             lambda i: Category(

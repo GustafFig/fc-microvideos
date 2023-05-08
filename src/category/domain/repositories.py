@@ -13,10 +13,7 @@ class CategoryTypeFilters(str):
 
 
 class _SearchParams(DefaultSearchParams[CategoryTypeFilters]):
-    
-    def _adjust_sort(self):
-        sort = str(self.sort) if self.sort else 'created_at'
-        object.__setattr__(self, "sort", sort)
+    pass
 
 
 class _SearchResult(DefaultSearchResult[CategoryTypeFilters, Category]):
@@ -27,6 +24,9 @@ class CategoryRepository(
     SearchableRepositoryInterface[_SearchParams, _SearchResult, Category],
     ABC,
 ):
+    """
+        Not InMemory because it is in the domain.
+    """
     sortable_fields = ["name", "is_active", "created_at"]
     SearchParams = _SearchParams
     SearchResult = _SearchResult
