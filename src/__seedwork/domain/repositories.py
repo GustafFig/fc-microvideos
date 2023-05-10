@@ -181,7 +181,7 @@ class SearchableRepositoryInterface(
 class InMemorySearchableRepositoryInterface(
     Generic[Filters, ET],
     SearchableRepositoryInterface[SearchParams[Filters], SearchResult[Filters, ET], ET],
-    InMemoryRepository,
+    InMemoryRepository[ET],
     ABC,
 ):
     """

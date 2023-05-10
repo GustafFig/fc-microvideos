@@ -6,7 +6,10 @@ from category.domain.entities import Category
 from category.domain.repositories import CategoryRepository, CategoryTypeFilters
 
 
-class InMemoryCategoryRepository(CategoryRepository, InMemorySearchableRepositoryInterface):
+class InMemoryCategoryRepository(
+    CategoryRepository,
+    InMemorySearchableRepositoryInterface[CategoryTypeFilters, Category]
+):
 
     def _apply_filter(
         self,
