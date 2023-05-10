@@ -55,7 +55,8 @@ class TestStrictCharField(unittest.TestCase):
                 data=valid)  # type: ignore
             self.assertTrue(serializer.is_valid())
             # type: ignore
-            self.assertEqual(serializer.validated_data["name"], valid["name"]) # type: ignore
+            # type: ignore
+            self.assertEqual(serializer.validated_data["name"], valid["name"])
             self.assertEqual(serializer.errors, {})
 
 

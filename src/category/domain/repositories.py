@@ -8,6 +8,7 @@ from __seedwork.domain.repositories import (
     SearchResult as DefaultSearchResult,
 )
 
+
 class CategoryTypeFilters(str):
     pass
 

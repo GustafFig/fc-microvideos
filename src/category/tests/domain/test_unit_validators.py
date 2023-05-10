@@ -132,4 +132,5 @@ class TestCategoryValidatorUnit(unittest.TestCase):
 
         for index, data in enumerate(valid_data):
             is_valid = self.validator.validate(data)
-            self.assertTrue(is_valid, f"Row: {index}, valid_data: {data}, {self.validator.errors}")
+            self.assertTrue(
+                is_valid, f"Row: {index}, valid_data: {data}, {self.validator.errors}")

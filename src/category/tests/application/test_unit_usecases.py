@@ -75,7 +75,6 @@ class TestCreateCategory(unittest.TestCase):
         for category in categories:
             self.repo.insert(category)
 
-        
         with patch.object(self.repo, 'find_by_id', wraps=self.repo.find_by_id) as find_by_id:
             usecase = GetCategoryUseCase(self.repo)
             input_param = GetCategoryUseCase.Input(id="not_an_valid_id")

@@ -38,13 +38,13 @@ class TestCategoryIntegration(unittest.TestCase):
 
     def test_create_with_invalid_cases_for_description(self):
         with self.assertRaises(ValidationException) as assert_error:
-            Category(name=None, description=5) # type: ignore
+            Category(name=None, description=5)  # type: ignore
         self.assertEqual(['Not a valid string.'],
                          assert_error.exception.error['description'])
 
     def test_create_with_invalid_cases_for_is_active(self):
         with self.assertRaises(ValidationException) as assert_error:
-            Category(name=None, is_active=5) # type: ignore
+            Category(name=None, is_active=5)  # type: ignore
         self.assertEqual(['Must be a valid boolean.'],
                          assert_error.exception.error['is_active'])
 
@@ -100,7 +100,7 @@ class TestCategoryIntegration(unittest.TestCase):
         category = Category(name='Movie')
 
         with self.assertRaises(ValidationException) as assert_error:
-            category.update(name='Movie', description=5) # type: ignore
+            category.update(name='Movie', description=5)  # type: ignore
         self.assertEqual(
             ['Not a valid string.'],
             assert_error.exception.error['description']

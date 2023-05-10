@@ -8,7 +8,8 @@ if TYPE_CHECKING:
 
 class InvalidUUidException(Exception):
     """The Exception for invalid UUID value"""
-    def __init__(self, error: str="ID must be a valid UUID") -> None:
+
+    def __init__(self, error: str = "ID must be a valid UUID") -> None:
         super().__init__(error)
 
 
@@ -19,8 +20,10 @@ class ValidationException(Exception):
         self.error = error
         super().__init__('Validation Error')
 
+
 class ValidationRulesException(Exception):
     """The Exception for ValidationRulesException"""
+
 
 class EntityNotFound(Exception):
     def __init__(self, entity_type: Type['Entity']) -> None:

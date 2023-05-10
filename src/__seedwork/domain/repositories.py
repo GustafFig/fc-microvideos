@@ -159,6 +159,7 @@ class SearchResult(Generic[Filters, ET], ABC):
 Input = TypeVar('Input')
 Output = TypeVar('Output')
 
+
 class SearchableRepositoryInterface(
     Generic[Input, Output, ET],
     RepositoryInterface[ET],
@@ -180,7 +181,8 @@ class SearchableRepositoryInterface(
 
 class InMemorySearchableRepositoryInterface(
     Generic[Filters, ET],
-    SearchableRepositoryInterface[SearchParams[Filters], SearchResult[Filters, ET], ET],
+    SearchableRepositoryInterface[SearchParams[Filters],
+                                  SearchResult[Filters, ET], ET],
     InMemoryRepository[ET],
     ABC,
 ):

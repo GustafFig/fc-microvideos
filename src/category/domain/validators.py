@@ -21,14 +21,15 @@ class DRFCategoryValidator(DRFValidator[Dict]):
 
     def validate(self, data: Dict) -> bool:
         return super().validate(
-            CategoryRules(data=data or {}) # type: ignore
+            CategoryRules(data=data or {})  # type: ignore
         )
 
 
 class ValidatorRulesCategoryValidator(ValidatorRulesValidator):
 
     def validate(self, data):
-        ValidatorRules.values(data.get('name'), 'name').required().string().max_length(255)
+        ValidatorRules.values(
+            data.get('name'), 'name').required().string().max_length(255)
         ValidatorRules.values(data.get('description'), 'description').string()
         ValidatorRules.values(data.get('is_active'), 'is_active').boolean()
         ValidatorRules.values(data.get('is_active'), 'is_active').boolean()
