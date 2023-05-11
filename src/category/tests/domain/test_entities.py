@@ -1,6 +1,6 @@
-from dataclasses import is_dataclass
 import datetime as dt
 import unittest
+from dataclasses import is_dataclass
 from unittest.mock import patch
 
 from category.domain.entities import Category
@@ -43,17 +43,17 @@ class TestCategory(unittest.TestCase):
     def test_category_activate(self, _validator):
         category = Category(name="Cat1", is_active=False)
 
-        assert category.is_active == False
+        assert category.is_active is False
         category.activate()
-        assert category.is_active == True
+        assert category.is_active is True
         category.activate()
-        assert category.is_active == True
+        assert category.is_active is True
 
     def test_category_inactivate(self, _validator):
         category = Category(name="Cat1", is_active=True)
 
-        assert category.is_active == True
+        assert category.is_active is True
         category.inactivate()
-        assert category.is_active == False
+        assert category.is_active is False
         category.inactivate()
-        assert category.is_active == False
+        assert category.is_active is False

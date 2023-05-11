@@ -1,13 +1,14 @@
 """
     Test integrations classes of validations
 """
-
+# pylint: disable=abstract-method
 
 import unittest
 
-from __seedwork.domain.validators import StrictBooleanField, StrictCharField, BooleanField
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.serializers import Serializer
+
+from __seedwork.domain.validators import StrictBooleanField, StrictCharField
 
 
 class TestStrictCharField(unittest.TestCase):
@@ -56,7 +57,7 @@ class TestStrictCharField(unittest.TestCase):
             self.assertTrue(serializer.is_valid())
             # type: ignore
             # type: ignore
-            self.assertEqual(serializer.validated_data["name"], valid["name"])
+            self.assertEqual(serializer.validated_data["name"], valid["name"])  # type: ignore
             self.assertEqual(serializer.errors, {})
 
 
@@ -90,7 +91,7 @@ class TestStrictBooleanField(unittest.TestCase):
                                  "Must be a valid boolean.", "invalid"),
                              assert_error_message)
 
-    def test_it_when_None_is_passed(self):
+    def test_it_when_none_is_passed(self):
         data = {"active": None}
         serializer = self.StubDFVStrictBooleanFieldNonNull(
             data=data)  # type: ignore
@@ -105,7 +106,7 @@ class TestStrictBooleanField(unittest.TestCase):
         self.assertTrue(serializer.is_valid())
         self.assertEqual(serializer.errors, {})
         validated_data = serializer.validated_data or {}
-        self.assertEqual(validated_data["active"], None)
+        self.assertEqual(validated_data["active"], None)  # type: ignore
 
     def test_valid_booleans(self):
         valid_data = [
@@ -119,5 +120,5 @@ class TestStrictBooleanField(unittest.TestCase):
             # type: ignore
             validated_data = serializer.validated_data or {}
             self.assertEqual(
-                validated_data["active"], valid["active"])
+                validated_data["active"], valid["active"])  # type: ignore
             self.assertEqual(serializer.errors, {})

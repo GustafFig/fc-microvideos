@@ -2,13 +2,14 @@
     Interfaces that define how others apps layers talk save and recue info to the domain
 """
 
+import math
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-import math
+from typing import Any, Generic, List, Optional, TypeVar
 
 from __seedwork.domain.value_objects import UniqueEntityId
+
 from .entities import Entity
-from typing import Any, Generic, Optional, TypeVar, List
 
 ET = TypeVar("ET", bound=Entity)
 
@@ -28,11 +29,11 @@ class RepositoryInterface(Generic[ET], ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def find_by_id(self, id: str | UniqueEntityId) -> Optional[ET]:
+    def find_by_id(self, entity_id: str | UniqueEntityId) -> Optional[ET]:
         raise NotImplementedError()
 
     @abstractmethod
-    def find_all(self, id) -> List[ET]:
+    def find_all(self) -> List[ET]:
         raise NotImplementedError()
 
 
@@ -61,10 +62,11 @@ class InMemoryRepository(RepositoryInterface[ET], ABC):
     def find_all(self) -> List[ET]:
         return list(self.items)
 
-    def find_by_id(self, id: str | UniqueEntityId) -> Optional[ET]:
+    def find_by_id(self, entity_id: str | UniqueEntityId) -> Optional[ET]:
         for repo_entity in self.items:
-            if repo_entity.id == str(id):
+            if repo_entity.id == str(entity_id):
                 return repo_entity
+        return None
 
 
 Filters = TypeVar("Filters", str, Any)
@@ -87,14 +89,14 @@ class SearchParams(Generic[Filters], ABC):
         self._normalize_filter()
 
     def _adjust_page(self):
-        default = self.__dataclass_fields__["page"].default
+        default = self._get_field_default("page")
         page = self._convert_int(self.page, default)
         if page <= 0:
             page = default
         object.__setattr__(self, "page", page)
 
     def _adjust_page_size(self):
-        default = self.__dataclass_fields__["per_page"].default
+        default = self._get_field_default("per_page")
         per_page = self._convert_int(self.per_page, default)
         if per_page <= 0:
             per_page = default
@@ -122,6 +124,9 @@ class SearchParams(Generic[Filters], ABC):
         filters = str(
             self.filters) if self.filters is not None and self.filters != "" else None
         object.__setattr__(self, "filters", filters)
+
+    def _get_field_default(self, field_name: str) -> Any:
+        return self.__dataclass_fields__[field_name].default  # pylint: disable=no-member
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -192,17 +197,17 @@ class InMemorySearchableRepositoryInterface(
         and method's typing.
     """
 
-    def search(self, input_params: SearchParams[Filters]) -> SearchResult[Filters, ET]:
-        items_filtered = self._apply_filter(self.items, input_params.filters)
+    def search(self, params: SearchParams[Filters]) -> SearchResult[Filters, ET]:
+        items_filtered = self._apply_filter(self.items, params.filters)
         items_sorted = self._apply_sort(
-            items_filtered, input_params.sort, input_params.sort_dir)
+            items_filtered, params.sort, params.sort_dir)
         items_paginated = self._apply_paginate(
-            items_sorted, input_params.page, input_params.per_page)
+            items_sorted, params.page, params.per_page)
 
         return SearchResult(
             items=items_paginated,
             total=len(items_filtered),
-            search_params=input_params,
+            search_params=params,
         )
 
     @abstractmethod

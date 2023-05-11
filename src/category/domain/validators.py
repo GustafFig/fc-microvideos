@@ -3,9 +3,12 @@ Define the rules to validate category's module's entities
 """
 # pylint: disable=too-few-public-methods
 from typing import Dict
-from rest_framework.serializers import Serializer, DateTimeField
-from __seedwork.domain.validators import ValidatorRules, ValidatorRulesValidator
-from __seedwork.domain.validators import DRFValidator, StrictBooleanField, StrictCharField
+
+from rest_framework.serializers import DateTimeField, Serializer
+
+from __seedwork.domain.validators import (DRFValidator, StrictBooleanField,
+                                          StrictCharField, ValidatorRules,
+                                          ValidatorRulesValidator)
 
 
 class CategoryRules(Serializer):
@@ -15,6 +18,12 @@ class CategoryRules(Serializer):
     )
     is_active = StrictBooleanField(required=False)
     created_at = DateTimeField(required=False)
+
+    def create(self, validated_data):
+        pass
+
+    def update(self, instance, validated_data):
+        pass
 
 
 class DRFCategoryValidator(DRFValidator[Dict]):

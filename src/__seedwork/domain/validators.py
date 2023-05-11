@@ -4,10 +4,11 @@
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Generic, List, TypeVar, Dict, Optional
-from rest_framework.fields import BooleanField, CharField
+from typing import Any, Dict, Generic, List, Optional, TypeVar
 
+from rest_framework.fields import BooleanField, CharField
 from rest_framework.serializers import Serializer
+
 from .exceptions import ValidationRulesException
 
 

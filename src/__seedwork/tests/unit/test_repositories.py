@@ -1,13 +1,15 @@
-from inspect import isabstract
+# pylint: disable=protected-access
+# pylint: disable=abstract-class-instantiated
+import unittest
 from dataclasses import dataclass, is_dataclass
 from typing import List, Optional
-import unittest
-from __seedwork.domain.entities import Entity
 
+from __seedwork.domain.entities import Entity
 from __seedwork.domain.repositories import (
-    ET, Filters, InMemorySearchableRepositoryInterface, RepositoryInterface, InMemoryRepository, SearchParams, SearchResult, SearchableRepositoryInterface)
+    ET, Filters, InMemoryRepository, InMemorySearchableRepositoryInterface,
+    RepositoryInterface, SearchableRepositoryInterface, SearchParams,
+    SearchResult)
 from __seedwork.domain.value_objects import UniqueEntityId
-from sqlparse import filters
 
 
 class TestRepositoryInterface(unittest.TestCase):
@@ -446,15 +448,15 @@ class TestInMemorySearchableRepository(unittest.TestCase):
         arrange_by_asc = [
             {
                 'input': SearchParams(page=1, per_page=2, sort='name'),
-                'output': dict(items=[items[1], items[0]], total=5),
+                'output': {"items": [items[1], items[0]], "total": 5},
             },
             {
                 'input': SearchParams(page=2, per_page=2, sort='name'),
-                'output': dict(items=[items[4], items[2]], total=5),
+                'output': {"items": [items[4], items[2]], "total": 5},
             },
             {
                 'input': SearchParams(page=3, per_page=2, sort='name'),
-                'output': dict(items=[items[3]], total=5),
+                'output': {"items": [items[3]], "total": 5},
             }
         ]
 
@@ -469,15 +471,15 @@ class TestInMemorySearchableRepository(unittest.TestCase):
         arrange_by_desc = [
             {
                 'input': SearchParams(page=1, per_page=2, sort='name', sort_dir='desc'),
-                'output': dict(items=[items[3], items[2]], total=5)
+                'output': {"items": [items[3], items[2]], "total": 5}
             },
             {
                 'input': SearchParams(page=2, per_page=2, sort='name', sort_dir='desc'),
-                'output': dict(items=[items[4], items[0]], total=5)
+                'output': {"items": [items[4], items[0]], "total": 5}
             },
             {
                 'input': SearchParams(page=3, per_page=2, sort='name', sort_dir='desc'),
-                'output': dict(items=[items[1]], total=5)
+                'output': {"items": [items[1]], "total": 5}
             }
         ]
 
@@ -504,13 +506,13 @@ class TestInMemorySearchableRepository(unittest.TestCase):
                 'input': SearchParams(
                     page=1, per_page=2, sort="name", sort_dir="asc", filters="TEST"
                 ),
-                'output': dict(items=[items[2], items[4]], total=3)
+                'output': {"items": [items[2], items[4]], "total": 3}
             },
             {
                 'input': SearchParams(
                     page=2, per_page=2, sort="name", sort_dir="asc", filters="TEST"
                 ),
-                'output': dict(items=[items[0]], total=3)
+                'output': {"items": [items[0]], "total": 3}
             },
         ]
 

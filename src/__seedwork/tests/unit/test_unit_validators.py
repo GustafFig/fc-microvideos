@@ -1,17 +1,18 @@
 """Test the validation classes at __seedwork
 """
 
+import typing as t
+import unittest
 # pylint: disable=abstract-class-instantiated
 from dataclasses import fields, is_dataclass
-import unittest
-import typing as t
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from rest_framework.serializers import Serializer
 
-from __seedwork.domain.validators import (
-    DRFValidator, ValidatorFieldsInterface, ValidatorRules, ValidationRulesException
-)
+from __seedwork.domain.validators import (DRFValidator,
+                                          ValidationRulesException,
+                                          ValidatorFieldsInterface,
+                                          ValidatorRules)
 
 
 class TestValidatorRulesUnit(unittest.TestCase):

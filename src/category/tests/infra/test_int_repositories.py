@@ -1,8 +1,7 @@
 import datetime
 import unittest
-from __seedwork.domain.value_objects import UniqueEntityId
-from category.domain.entities import Category
 
+from category.domain.entities import Category
 from category.infra.repositories import InMemoryCategoryRepository
 
 

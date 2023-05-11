@@ -25,8 +25,13 @@ test="pytest src"
 test_cov="pytest src --cov ./src"
 test_html="pytest src --cov ./src --cov-report html:./__coverage"
 ci_test="pytest src --cov ./src --cov-fail-under 80"
-lint="pylint"
+lint="pylint ./src"
 formatter="autopep8 --in-place --recursive ./src"
+
+[tool.autopep8]
+max_line_length = 100
+in-place = true
+recursive = true
 
 [build-system]
 requires = ["setuptools>=61", "wheel"]

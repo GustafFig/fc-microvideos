@@ -1,5 +1,5 @@
 from dataclasses import asdict, dataclass
-from typing import Optional, List
+from typing import List, Optional
 
 from __seedwork.application.usecases import UseCase
 from __seedwork.domain.exceptions import EntityNotFound
@@ -73,8 +73,8 @@ class GetCategoryUseCase(UseCase):
                 is_active=category.is_active,
                 created_at=category.created_at,
             )
-        else:
-            raise EntityNotFound(Category)
+
+        raise EntityNotFound(Category)
 
     @dataclass(slots=True, frozen=True)
     class Input:

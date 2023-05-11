@@ -1,7 +1,8 @@
 import unittest
 from collections import namedtuple
 
-from category.domain.validators import DRFCategoryValidator, CategoryValidatorFactory
+from category.domain.validators import (CategoryValidatorFactory,
+                                        DRFCategoryValidator)
 
 
 class TestCategoryValidatorUnit(unittest.TestCase):
@@ -36,7 +37,7 @@ class TestCategoryValidatorUnit(unittest.TestCase):
             InvalidaData({'name': {}}, 'Not a valid string.'),
             InvalidaData({'name': 5.5}, 'Not a valid string.'),
             InvalidaData({'name': []}, 'Not a valid string.'),
-            InvalidaData({'name': 'a'*256},
+            InvalidaData({'name': 'a' * 256},
                          'Ensure this field has no more than 255 characters.'),
         ]
 
@@ -99,7 +100,9 @@ class TestCategoryValidatorUnit(unittest.TestCase):
     def test_invalid_created_at(self):
         InvalidaData = namedtuple("InvalidData", ["data", "expected"])
         predata = {"name": "valid", "description": "Valid"}
-        invalid_message = "Datetime has wrong format. Use one of these formats instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z]."
+        invalid_message = (
+            "Datetime has wrong format. Use one of these formats instead: "
+            "YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].")
         invalid_data = [
             InvalidaData({**predata, "created_at": 5}, invalid_message),
             InvalidaData({**predata, "created_at": {}}, invalid_message),

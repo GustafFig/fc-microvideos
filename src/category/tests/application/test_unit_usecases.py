@@ -1,10 +1,11 @@
-from os import name
-from typing import Optional
 import unittest
+from typing import Optional
 from unittest.mock import patch
-from __seedwork.domain.exceptions import EntityNotFound
 
-from category.application.usecase import CreateCategoryUseCase, GetCategoryUseCase
+from __seedwork.domain.exceptions import EntityNotFound
+from category.application.dto import CategoryOutputMapper
+from category.application.usecase import (CreateCategoryUseCase,
+                                          GetCategoryUseCase)
 from category.domain.entities import Category
 from category.infra.repositories import InMemoryCategoryRepository
 
@@ -58,13 +59,9 @@ class TestCreateCategory(unittest.TestCase):
                 usecase = GetCategoryUseCase(self.repo)
                 input_param = GetCategoryUseCase.Input(id=category.id)
                 output = usecase(input_param)
-                expected_output = GetCategoryUseCase.Output(
-                    id=category.id,
-                    name=category.name,
-                    description=category.description,
-                    is_active=category.is_active,
-                    created_at=category.created_at,
-                )
+                expected_output = CategoryOutputMapper\
+                    .with_child(GetCategoryUseCase.Output)\
+                    .to_output(category)
                 self.assertEqual(output, expected_output,
                                  f"Output is diferent in category={category.name}")
                 find_by_id.assert_called_once_with(category.id)

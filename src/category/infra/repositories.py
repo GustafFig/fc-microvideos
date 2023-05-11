@@ -1,9 +1,10 @@
 from typing import List, Optional
-from __seedwork.domain.repositories import (
+
+from __seedwork.domain.repositories import \
     InMemorySearchableRepositoryInterface
-)
 from category.domain.entities import Category
-from category.domain.repositories import CategoryRepository, CategoryTypeFilters
+from category.domain.repositories import (CategoryRepository,
+                                          CategoryTypeFilters)
 
 
 class InMemoryCategoryRepository(

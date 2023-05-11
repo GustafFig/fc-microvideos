@@ -1,16 +1,15 @@
-from abc import ABC
 import json
-from dataclasses import dataclass, field, fields
-from src.__seedwork.domain.exceptions import InvalidUUidException
 import uuid
+from abc import ABC
+from dataclasses import dataclass, field, fields
+
+from src.__seedwork.domain.exceptions import InvalidUUidException
 
 
-@dataclass(frozen=True, )
+@dataclass(frozen=True)
 class ValueObject(ABC):
     def __eq__(self, other):
-        if isinstance(other, ValueObject):
-            pass
-        else:
+        if not isinstance(other, ValueObject):
             raise NotImplementedError(
                 f"ValueObject cannot be compared equally with {type(other)}")
 
@@ -24,7 +23,7 @@ class ValueObject(ABC):
 @dataclass(frozen=True)
 class UniqueEntityId(ValueObject):
 
-    id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    id: str = field(default_factory=lambda: str(uuid.uuid4()))  # pylint: disable=invalid-name
 
     def __post_init__(self):
         # garante que sempre seja uma string

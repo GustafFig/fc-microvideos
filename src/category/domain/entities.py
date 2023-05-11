@@ -1,7 +1,7 @@
 """Define the entities of domain"""
-from dataclasses import dataclass, field
 import datetime as dt
 import typing as t
+from dataclasses import dataclass, field
 
 from __seedwork.domain.entities import Entity, ToggleIsActive
 from __seedwork.domain.exceptions import ValidationException
@@ -19,7 +19,7 @@ class Category(Entity, ToggleIsActive):
     is_active: bool = True
     created_at: dt.datetime = field(default_factory=dt.datetime.now)
 
-    def __post_init__(self, **kwargs):
+    def __post_init__(self):
         created_at = self.created_at if self.created_at else dt.datetime.now()
         object.__setattr__(self, 'created_at', created_at)
         self.validate()

@@ -1,5 +1,5 @@
 from abc import ABC
-from dataclasses import Field, dataclass, field, asdict
+from dataclasses import Field, asdict, dataclass, field
 
 from __seedwork.domain.value_objects import UniqueEntityId
 
@@ -23,7 +23,7 @@ class Entity(ABC):
 
     @classmethod
     def get_field(cls, entity_field: str) -> Field:
-        return cls.__dataclass_fields__[entity_field]
+        return cls.__dataclass_fields__[entity_field]  # pylint: disable=no-member
 
 
 class ToggleIsActive():

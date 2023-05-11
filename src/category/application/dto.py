@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional, TypeVar
+from typing import Optional, Type, TypeVar
+
 from category.domain.entities import Category
 
 
@@ -16,11 +17,21 @@ class CategoryOutput:
 Output = TypeVar('Output', bound=CategoryOutput)
 
 
+@dataclass()
 class CategoryOutputMapper:
 
+    child_output: Type[Output] = CategoryOutput
+
     @staticmethod
-    def to_output(category: Category) -> CategoryOutput:
-        return CategoryOutput(
+    def with_child(child: Output):
+        return CategoryOutputMapper(child_output=child)
+
+    @staticmethod
+    def without_child():
+        return CategoryOutputMapper()
+
+    def to_output(self, category: Category) -> Output:
+        return self.child_output(
             id=category.id,
             name=category.name,
             description=category.description,

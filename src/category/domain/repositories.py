@@ -1,12 +1,11 @@
 
-from .entities import Category
 from abc import ABC
 
-from __seedwork.domain.repositories import (
-    SearchableRepositoryInterface,
-    SearchParams as DefaultSearchParams,
-    SearchResult as DefaultSearchResult,
-)
+from __seedwork.domain.repositories import SearchableRepositoryInterface
+from __seedwork.domain.repositories import SearchParams as DefaultSearchParams
+from __seedwork.domain.repositories import SearchResult as DefaultSearchResult
+
+from .entities import Category
 
 
 class CategoryTypeFilters(str):

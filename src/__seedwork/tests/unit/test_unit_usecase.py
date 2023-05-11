@@ -1,3 +1,4 @@
+# pylint: disable=abstract-class-instantiated
 import unittest
 
 from __seedwork.application.usecases import UseCase

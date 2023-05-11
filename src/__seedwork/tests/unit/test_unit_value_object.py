@@ -1,10 +1,12 @@
+# pylint: disable=protected-access
+import uuid
 from abc import ABC
-from dataclasses import is_dataclass, FrozenInstanceError, dataclass
+from dataclasses import FrozenInstanceError, dataclass, is_dataclass
 from unittest import TestCase
 from unittest.mock import patch
-import uuid
 
-from src.__seedwork.domain.value_objects import UniqueEntityId, InvalidUUidException, ValueObject
+from src.__seedwork.domain.value_objects import (InvalidUUidException,
+                                                 UniqueEntityId, ValueObject)
 
 
 @dataclass(frozen=True)
@@ -42,6 +44,7 @@ class TestValueObjectUnit(TestCase):
         with self.assertRaises(FrozenInstanceError) as assert_error:
             vo1 = StubProp(prop="value")
             vo1.prop = "new value"  # type: ignore
+        self.assertEqual(assert_error.exception.args[0], "cannot assign to field 'prop'")
 
 
 class TestUniqueEntityIdUnit(TestCase):
@@ -93,6 +96,7 @@ class TestUniqueEntityIdUnit(TestCase):
         with self.assertRaises(FrozenInstanceError) as assert_error:
             value_object = UniqueEntityId()
             value_object.id = 'asdfasdf'  # type: ignore
+        self.assertEqual(assert_error.exception.args[0], "cannot assign to field 'id'")
 
     def test_convert_to_str(self):
         value_object = UniqueEntityId()
