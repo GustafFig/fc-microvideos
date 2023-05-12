@@ -2,7 +2,7 @@ from dataclasses import asdict, dataclass
 from typing import List, Optional
 
 from __seedwork.application.usecases import UseCase
-from __seedwork.domain.exceptions import EntityNotFound
+from __seedwork.domain.exceptions import EntityNotFound, MissingParameter
 from category.application.dto import CategoryOutput, CategoryOutputMapper
 from category.domain.entities import Category
 from category.domain.repositories import CategoryRepository
@@ -152,4 +152,29 @@ class UpdateCategoryUseCase(UseCase):
         is_active: Optional[bool] = Category.get_field('is_active').default
 
     class Output(CategoryOutput):
+        pass
+
+
+@dataclass(frozen=True, slots=True)
+class DeleteCategoryUseCase(UseCase):
+
+    repo: CategoryRepository
+
+    def __call__(self, input_param: 'Input') -> 'Output':
+        if not input_param.id:
+            raise MissingParameter("id")
+
+        category = self.repo.find_by_id(input_param.id)
+        if not category:
+            return self.Output()
+
+        self.repo.delete(category)
+        return self.Output()
+
+    @dataclass(frozen=True, slots=True)
+    class Input:
+        id: str  # pylint: disable=invalid-name
+
+    @dataclass(frozen=True, slots=True)
+    class Output:
         pass

@@ -1,10 +1,11 @@
 import unittest
 from typing import Optional
 from unittest.mock import patch
+from __seedwork.application.usecases import UseCase
 
-from __seedwork.domain.exceptions import EntityNotFound, ValidationException
+from __seedwork.domain.exceptions import EntityNotFound, MissingParameter, ValidationException
 from category.application.dto import CategoryOutputMapper
-from category.application.usecase import (CreateCategoryUseCase,
+from category.application.usecase import (CreateCategoryUseCase, DeleteCategoryUseCase,
                                           GetCategoryUseCase, UpdateCategoryUseCase)
 from category.domain.entities import Category
 from category.infra.repositories import InMemoryCategoryRepository
@@ -275,3 +276,45 @@ class TestUpdateCategoryUseCase(unittest.TestCase):
             err.exception.args[0],
             "UpdateCategoryUseCase.Input.__init__() got an unexpected keyword argument 'created_at'"
         )
+
+
+class TestDeleteCategoryUseCase(unittest.TestCase):
+
+    repo: InMemoryCategoryRepository
+
+    def setUp(self) -> None:
+        self.repo = InMemoryCategoryRepository()
+
+    def test_it_inherit_from_use_case(self):
+        self.assertTrue(issubclass(DeleteCategoryUseCase, UseCase))
+
+    def test_it_raises_if_id_is_none(self):
+        usecase = DeleteCategoryUseCase(repo=self.repo)
+        input_param = DeleteCategoryUseCase.Input(id=None)
+        with (
+            self.assertRaises(MissingParameter) as err,
+            patch.object(self.repo, 'delete') as repo_delete
+        ):
+            usecase(input_param)
+        self.assertEqual(err.exception.args[0], "Missing parameter id")
+        repo_delete.assert_not_called()
+
+    def test_it_delete_if_find_the_target_category(self):
+        category = Category(name="cat1")
+        self.repo.insert(category)
+
+        usecase = DeleteCategoryUseCase(repo=self.repo)
+        input_param = DeleteCategoryUseCase.Input(id="fake id")
+        with patch.object(self.repo, 'delete') as repo_delete:
+            usecase(input_param)
+        repo_delete.assert_not_called()
+
+    def test_it_can_delete_a_category(self):
+        category = Category(name="cat1")
+        self.repo.insert(category)
+
+        usecase = DeleteCategoryUseCase(repo=self.repo)
+        input_param = DeleteCategoryUseCase.Input(id=category.id)
+        with patch.object(self.repo, 'delete') as repo_delete:
+            usecase(input_param)
+        repo_delete.assert_called_once_with(category)

@@ -28,3 +28,9 @@ class ValidationRulesException(Exception):
 class EntityNotFound(Exception):
     def __init__(self, entity_type: Type['Entity']) -> None:
         super().__init__(f"{entity_type.__name__} not found")
+
+
+class MissingParameter(Exception):
+
+    def __init__(self, parameter_name) -> None:
+        super().__init__(f"Missing parameter {parameter_name}")
