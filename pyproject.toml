@@ -22,10 +22,12 @@ license = {text = "MIT"}
 
 [tool.pdm.scripts]
 test="pytest src"
+pytest="pytest src"
 test_cov="pytest src --cov ./src"
 test_html="pytest src --cov ./src --cov-report html:./__coverage"
 ci_test="pytest src --cov ./src --cov-fail-under 80"
 lint="pylint ./src"
+pylint="pylint ./src"
 formatter="autopep8 --in-place --recursive ./src"
 
 [tool.autopep8]
