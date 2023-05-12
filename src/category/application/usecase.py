@@ -120,3 +120,36 @@ class ListCategoriesUseCase(UseCase):
         per_page: int
         sort: Optional[str]
         sort_dir: Optional[str]
+
+
+@dataclass(frozen=True, slots=True)
+class UpdateCategoryUseCase(UseCase):
+
+    repo: CategoryRepository
+
+    def __call__(self, input_param: 'Input') -> 'Output':
+        category = self.repo.find_by_id(entity_id=input_param.id)
+
+        if not category:
+            raise EntityNotFound(Category)
+
+        if category.is_active and not input_param.is_active:
+            category.inactivate()
+        elif not category.is_active and input_param.is_active:
+            category.activate()
+
+        category.update(name=input_param.name, description=input_param.description)
+
+        self.repo.update(category)
+
+        return CategoryOutputMapper().to_output(category)
+
+    @dataclass(frozen=True, slots=True)
+    class Input:
+        id: str  # pylint: disable=invalid-name
+        name: str
+        description: str
+        is_active: Optional[bool] = Category.get_field('is_active').default
+
+    class Output(CategoryOutput):
+        pass

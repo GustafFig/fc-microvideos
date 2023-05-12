@@ -2,10 +2,10 @@ import unittest
 from typing import Optional
 from unittest.mock import patch
 
-from __seedwork.domain.exceptions import EntityNotFound
+from __seedwork.domain.exceptions import EntityNotFound, ValidationException
 from category.application.dto import CategoryOutputMapper
 from category.application.usecase import (CreateCategoryUseCase,
-                                          GetCategoryUseCase)
+                                          GetCategoryUseCase, UpdateCategoryUseCase)
 from category.domain.entities import Category
 from category.infra.repositories import InMemoryCategoryRepository
 
@@ -48,6 +48,12 @@ class TestCreateCategory(unittest.TestCase):
             'is_active': Optional[bool],
         })
 
+
+class TestGetCategoryUseCase(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.repo = InMemoryCategoryRepository()
+
     def test_can_get_category(self):
         categories = list(map(lambda name: Category(
             name=name), ("Cat1", "Cat2", "Cat3")))
@@ -79,3 +85,193 @@ class TestCreateCategory(unittest.TestCase):
                 usecase(input_param)
             self.assertEqual(err.exception.args[0], 'Category not found')
             find_by_id.assert_called_once_with("not_an_valid_id")
+
+
+class TestUpdateCategoryUseCase(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.repo = InMemoryCategoryRepository()
+
+    def test_it_fail_with_name_is_to_long(self):
+        category = Category(name="Test", description="Description")
+        self.repo.insert(category)
+
+        usecase = UpdateCategoryUseCase(self.repo)
+        input_param = UpdateCategoryUseCase.Input(
+            id=category.id,
+            name="u" * 256,
+            description="updated description",
+        )
+        with (
+            patch.object(self.repo, 'update', wraps=self.repo.update) as repo_update,
+            self.assertRaises(ValidationException) as err,
+        ):
+            usecase(input_param)
+        self.assertEqual(err.exception.args[0], "Validation Error")
+        self.assertTrue(err.exception.error.get('name'))
+        self.assertEqual(
+            err.exception.error['name'][0],
+            'Ensure this field has no more than 255 characters.',
+        )
+
+        repo_update.assert_not_called()
+
+    def test_name_cannot_be_none(self):
+        category = Category(name="Test", description="Description")
+        self.repo.insert(category)
+
+        usecase = UpdateCategoryUseCase(self.repo)
+        input_param = UpdateCategoryUseCase.Input(
+            id=category.id,
+            name=None,
+            description="updated description",
+        )
+        with (
+            patch.object(self.repo, 'update', wraps=self.repo.update) as repo_update,
+            self.assertRaises(ValidationException) as err,
+        ):
+            usecase(input_param)
+        self.assertEqual(err.exception.args[0], "Validation Error")
+        self.assertTrue(err.exception.error.get('name'))
+        self.assertEqual(
+            err.exception.error['name'][0],
+            'This field may not be null.',
+        )
+
+        repo_update.assert_not_called()
+
+    def test_not_update_a_non_exists_category(self):
+        usecase = UpdateCategoryUseCase(self.repo)
+        input_param = UpdateCategoryUseCase.Input(
+            id="NonExists", name="updated name", description="updated description",
+        )
+        with (
+            patch.object(self.repo, 'find_by_id', wraps=self.repo.find_by_id) as repo_find_by_id,
+            patch.object(self.repo, 'update', wraps=self.repo.update) as repo_update,
+            self.assertRaises(EntityNotFound) as err,
+        ):
+            usecase(input_param)
+        repo_find_by_id.assert_called_with(entity_id="NonExists")
+        repo_update.assert_not_called()
+        self.assertEqual(err.exception.args[0], "Category not found")
+
+    def test_cannot_pass_invalid_types_to_input_name(self):
+        category = Category(name="Test", description="Description")
+        self.repo.insert(category)
+        usecase = UpdateCategoryUseCase(self.repo)
+
+        for name in [{}, 5, 5.5, [], set()]:
+            input_param = UpdateCategoryUseCase.Input(
+                id=category.id,
+                name=name,
+                description=category.description,
+            )
+
+            with (
+                patch.object(self.repo, 'update', wraps=self.repo.update) as repo_update,
+                self.assertRaises(ValidationException) as err,
+            ):
+                usecase(input_param)
+            repo_update.assert_not_called()
+            self.assertTrue(err.exception.error.get('name'))
+            self.assertEqual(
+                err.exception.error['name'][0],
+                'Not a valid string.',
+            )
+
+    def test_cannot_pass_invalid_types_to_input_description(self):
+        category = Category(name="Test", description="Description")
+        self.repo.insert(category)
+        usecase = UpdateCategoryUseCase(self.repo)
+
+        for description in [{}, 5, 5.5, [], set()]:
+            input_param = UpdateCategoryUseCase.Input(
+                id=category.id,
+                name=category.name,
+                description=description,
+            )
+
+            with (
+                patch.object(self.repo, 'update', wraps=self.repo.update) as repo_update,
+                self.assertRaises(ValidationException) as err,
+            ):
+                usecase(input_param)
+            repo_update.assert_not_called()
+            self.assertTrue(err.exception.error.get('description'))
+            self.assertEqual(
+                err.exception.error['description'][0],
+                'Not a valid string.',
+            )
+
+    def test_update_category(self):
+        category = Category(name="Test", description="Description")
+        self.repo.insert(category)
+
+        usecase = UpdateCategoryUseCase(self.repo)
+        input_param = UpdateCategoryUseCase.Input(
+            id=category.id,
+            name="updated name",
+            is_active=True,
+            description="updated description",
+        )
+        with patch.object(self.repo, 'update', wraps=self.repo.update) as repo_update:
+            output = usecase(input_param)
+        repo_update.assert_called()
+        repo_category = self.repo.find_by_id(category.id)
+        self.assertEqual(repo_category, category)
+        self.assertEqual(output.name, category.name)
+        self.assertEqual(output.description, category.description)
+        self.assertTrue(output.is_active)
+
+    def test_description_can_be_none(self):
+        category = Category(name="Test", description="Description")
+        self.repo.insert(category)
+
+        usecase = UpdateCategoryUseCase(self.repo)
+        input_param = UpdateCategoryUseCase.Input(
+            id=category.id,
+            name="Updated Name",
+            description=None,
+        )
+        with patch.object(self.repo, 'update', wraps=self.repo.update) as repo_update:
+            output = usecase(input_param)
+
+        repo_update.assert_called_once()
+        repo_category = self.repo.find_by_id(category.id)
+        self.assertIsNone(repo_category.description)
+        self.assertIsNone(output.description)
+
+    def test_should_be_possible_toggle_category_active(self):
+        category = Category(name="Test", description="Description")
+        self.repo.insert(category)
+        usecase = UpdateCategoryUseCase(self.repo)
+
+        for is_active in [not category.is_active, category.is_active]:
+            input_param = UpdateCategoryUseCase.Input(
+                id=category.id,
+                name="category name",
+                description="description",
+                is_active=is_active,
+            )
+
+            with patch.object(self.repo, 'update', wraps=self.repo.update) as repo_update:
+                output = usecase(input_param)
+
+            repo_update.assert_called_once()
+            repo_category = self.repo.find_by_id(category.id)
+            self.assertEqual(repo_category.is_active, is_active)
+            self.assertEqual(output.is_active, is_active)
+
+    def test_its_not_possible_to_pass_created_at(self):
+        with self.assertRaises(TypeError) as err:
+            UpdateCategoryUseCase.Input(  # pylint: disable=unexpected-keyword-arg
+                id="123",
+                name="Test",
+                description="132",
+                is_active=True,
+                created_at="value",  # type: ignore
+            )
+        self.assertEqual(
+            err.exception.args[0],
+            "UpdateCategoryUseCase.Input.__init__() got an unexpected keyword argument 'created_at'"
+        )
