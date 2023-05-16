@@ -31,4 +31,4 @@ RUN echo 'eval "$(pdm --pep582)"' >> ~/.bashrc
 
 # Coloca apenas o CMD pois é container de desenvolvimento e não é um serviço
 # Aponta para o tail /dev/null para manter o container de pé
-CMD [ "./.docker/entrypoint.sh" ]
+CMD [ "./.docker/start-app.sh" ]
