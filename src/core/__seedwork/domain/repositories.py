@@ -127,11 +127,10 @@ class SearchParams(Generic[Filters], ABC):
 
     def _get_field_default(self, field_name: str) -> Any:
         return self.__dataclass_fields__[field_name].default  # pylint: disable=no-member
-    
+
     @classmethod
     def get_field_default(cls, field_name: str) -> Any:
         return cls.__dataclass_fields__[field_name].default  # pylint: disable=no-member
-
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class SearchResult(Generic[Filters, ET], ABC):

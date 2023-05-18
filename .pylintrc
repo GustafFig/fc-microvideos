@@ -1,3 +1,4 @@
 [MAIN]
+extension-pkg-allow-list=dependency_injector
 ignore=__pypackages__/**/*.py
-disable=C0111,R0903
+disable=C0111,R0903,C0103

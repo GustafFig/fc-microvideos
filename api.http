@@ -9,8 +9,18 @@ Content-Type: application/json
 GET http://localhost:8000/categories/
 Content-Type: application/json
 
-{
-    
-}
 ###
-GET http://localhost:8000/categories/d3bd4665-25b4-4b13-adf4-e6bacf16e6cd
+GET http://localhost:8000/categories/896d930f-d432-42d2-a1ea-33f981df54ad
+
+###
+PUT http://localhost:8000/categories/896d930f-d432-42d2-a1ea-33f981df54ad/
+Content-Type: application/json
+
+{
+  "name": "some_name",
+  "description": "Descritivo",
+  "is_active": false
+}
+
+###
+DELETE http://localhost:8000/categories/6cc8f2bf-c0e0-4a6b-a3f3-7f1b9020902f/
