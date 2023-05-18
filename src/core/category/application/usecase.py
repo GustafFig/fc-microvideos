@@ -51,8 +51,8 @@ class CreateCategoryUseCase(UseCase):
     @dataclass(slots=True, frozen=True)
     class Input:
         name: str
-        description: Optional[str]
-        is_active: Optional[bool]
+        description: Optional[str] = Category.get_field('description').default
+        is_active: Optional[bool] = Category.get_field('is_active').default
 
     @dataclass(slots=True, frozen=True)
     class Output(CategoryOutput):
@@ -93,7 +93,7 @@ class ListCategoriesUseCase(UseCase):
     def __call__(self, input_param: 'Input') -> 'Output':
         search_params = self.repo.SearchParams(**asdict(input_param))
         result = self.repo.search(search_params)
-        items = map(CategoryOutputMapper.to_output, result.items)
+        items = map(CategoryOutputMapper.without_child().to_output, result.items)
         return self.Output(
             items=list(items),
             total=result.total,
@@ -106,10 +106,10 @@ class ListCategoriesUseCase(UseCase):
 
     @dataclass(slots=True, frozen=True)
     class Input:
-        page: int
-        per_page: int
-        sort: str
-        sort_dir: str
+        page: int = CategoryRepository.SearchParams.get_field_default('page')
+        per_page: int = CategoryRepository.SearchParams.get_field_default('per_page')
+        sort: str = CategoryRepository.SearchParams.get_field_default('sort')
+        sort_dir: str = CategoryRepository.SearchParams.get_field_default('sort_dir')
 
     @dataclass(slots=True, frozen=True)
     class Output:

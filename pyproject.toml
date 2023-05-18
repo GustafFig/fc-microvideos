@@ -5,6 +5,7 @@ dev = [
     "pylint>=2.17.2",
     "pytest>=7.3.1",
     "pytest-cov>=4.0.0",
+    "pytest-django>=4.5.2",
 ]
 
 [project]
@@ -17,6 +18,8 @@ authors = [
 dependencies = [
     "djangorestframework>=3.14.0",
     "django>=4.2.1",
+    "django-extensions>=3.2.1",
+    "dependency-injector>=4.41.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -31,6 +34,8 @@ ci_test="pytest src --cov ./src --cov-fail-under 80"
 lint="pylint ./src"
 pylint="pylint ./src"
 formatter="autopep8 --in-place --recursive ./src"
+server="pdm run manage runserver 0.0.0.0:8000"
+manage="python ./src/django_app/manage.py"
 
 [tool.autopep8]
 max_line_length = 100

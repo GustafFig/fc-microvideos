@@ -5,3 +5,4 @@
 micro_videos.egg-info
 build
 dist
+db.sqlite3

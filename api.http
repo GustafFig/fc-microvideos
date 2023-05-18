@@ -1,0 +1,16 @@
+POST http://localhost:8000/categories/
+Content-Type: application/json
+
+{
+    "name": "some_name"
+}
+
+###
+GET http://localhost:8000/categories/
+Content-Type: application/json
+
+{
+    
+}
+###
+GET http://localhost:8000/categories/ab6b2f65-cfe7-4f6e-a470-d957b151b99b

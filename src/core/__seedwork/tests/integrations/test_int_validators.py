@@ -5,14 +5,10 @@
 
 import unittest
 
-from django.conf import settings
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.serializers import Serializer
 
 from core.__seedwork.domain.validators import StrictBooleanField, StrictCharField
-
-
-settings.configure(USE_I18N=False)
 
 
 class TestStrictCharField(unittest.TestCase):
