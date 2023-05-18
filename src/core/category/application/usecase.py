@@ -100,8 +100,6 @@ class ListCategoriesUseCase(UseCase):
             last_page=result.last_page,
             page=result.search_params.page,
             per_page=result.search_params.per_page,
-            sort=result.search_params.sort,
-            sort_dir=result.search_params.sort_dir,
         )
 
     @dataclass(slots=True, frozen=True)
@@ -110,6 +108,7 @@ class ListCategoriesUseCase(UseCase):
         per_page: int = CategoryRepository.SearchParams.get_field_default('per_page')
         sort: str = CategoryRepository.SearchParams.get_field_default('sort')
         sort_dir: str = CategoryRepository.SearchParams.get_field_default('sort_dir')
+        filters: str = CategoryRepository.SearchParams.get_field_default('filters')
 
     @dataclass(slots=True, frozen=True)
     class Output:
@@ -118,8 +117,6 @@ class ListCategoriesUseCase(UseCase):
         last_page: int
         page: int
         per_page: int
-        sort: Optional[str]
-        sort_dir: Optional[str]
 
 
 @dataclass(frozen=True, slots=True)

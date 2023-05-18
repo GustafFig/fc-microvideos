@@ -13,4 +13,4 @@ Content-Type: application/json
     
 }
 ###
-GET http://localhost:8000/categories/ab6b2f65-cfe7-4f6e-a470-d957b151b99b
+GET http://localhost:8000/categories/d3bd4665-25b4-4b13-adf4-e6bacf16e6cd

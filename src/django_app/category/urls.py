@@ -5,7 +5,9 @@ from .api import CategoryResource
 urlpatterns = [
     path('categories/', CategoryResource.as_view(
         create_use_case=container.Container.use_case_category_create_category,
-        get_use_case=container.Container.use_case_category_get_category,
         list_use_case=container.Container.use_case_category_list_category,
+    )),
+    path('categories/<uuid:id>/', CategoryResource.as_view(
+        get_use_case=container.Container.use_case_category_get_category,
     ))
 ]
