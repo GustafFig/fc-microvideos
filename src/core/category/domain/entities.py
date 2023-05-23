@@ -17,10 +17,12 @@ class Category(Entity, ToggleIsActive):
     name: str
     description: t.Optional[str] = None
     is_active: bool = True
-    created_at: dt.datetime = field(default_factory=dt.datetime.now)
+    created_at: dt.datetime = field(
+        default_factory=lambda: dt.datetime.now(dt.timezone.utc)
+    )
 
     def __post_init__(self):
-        created_at = self.created_at if self.created_at else dt.datetime.now()
+        created_at = self.created_at if self.created_at else dt.datetime.now(dt.timezone.utc)
         object.__setattr__(self, 'created_at', created_at)
         self.validate()
 

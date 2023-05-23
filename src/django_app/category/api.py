@@ -1,5 +1,5 @@
-  # pylint: disable=redefined-builtin
-  # pylint: disable=invalid-name
+# pylint: disable=redefined-builtin
+# pylint: disable=invalid-name
 from dataclasses import asdict, dataclass
 from typing import Callable, Optional
 
@@ -31,7 +31,7 @@ class CategoryResource(APIView):
         output = self.create_use_case()(input_param)
         return Response(asdict(output), status=HTTP_201_CREATED)
 
-    def get(self, req: Request, id: str=None):
+    def get(self, req: Request, id: str = None):
         if id:
             return self.get_object(id=id)
         input_param = ListCategoriesUseCase.Input(**req.query_params.dict())
