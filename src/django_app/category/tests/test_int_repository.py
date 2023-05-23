@@ -52,3 +52,16 @@ class TestCategoryDjangoRepositoryInt(unittest.TestCase):
         with self.assertRaises(EntityNotFound) as err:
             self.repo.find_by_id("c005735a-f9a6-11ed-be56-0242ac120002")
         self.assertEqual(err.exception.args[0], "Category not found")
+
+    def test_find_all(self):
+        self.assertListEqual([], self.repo.find_all())
+
+        category = Category(name="Movie")
+        category2 = Category(name="Movie2")
+        self.repo.insert(category)
+        self.repo.insert(category2)
+
+        self.assertListEqual(
+            [category, category2],
+            self.repo.find_all(),
+        )
