@@ -1,5 +1,7 @@
 # pylint: disable=no-member
 import unittest
+from core.category.infra.mapper import CategoryDjangoModelMapper
+from model_bakery import baker
 import pytest
 
 from django_app.category.models import CategoryModel
@@ -54,14 +56,10 @@ class TestCategoryDjangoRepositoryInt(unittest.TestCase):
         self.assertEqual(err.exception.args[0], "Category not found")
 
     def test_find_all(self):
-        self.assertListEqual([], self.repo.find_all())
-
-        category = Category(name="Movie")
-        category2 = Category(name="Movie2")
-        self.repo.insert(category)
-        self.repo.insert(category2)
+        self.assertListEqual([], self.repo.find_all(), "Should get empty data")
+        models = baker.make(CategoryModel, _quantity=2)
 
         self.assertListEqual(
-            [category, category2],
             self.repo.find_all(),
+            [CategoryDjangoModelMapper.to_entity(model) for model in models],
         )
