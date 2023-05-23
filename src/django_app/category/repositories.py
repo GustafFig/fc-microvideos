@@ -2,6 +2,7 @@
 from typing import Optional, List
 
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 
 from core.__seedwork.domain.exceptions import EntityNotFound
 from core.__seedwork.domain.value_objects import UniqueEntityId
@@ -18,10 +19,14 @@ class CategoryDjangoRepository(CategoryRepository):
         model.save()
 
     def update(self, entity: Category) -> None:
-        raise NotImplementedError()
+        self._get(entity.id)
+        model = CategoryDjangoModelMapper.to_model(entity)
+        model.save()
 
     def delete(self, entity: Category) -> None:
-        raise NotImplementedError()
+        self._get(entity.id)
+        model = CategoryDjangoModelMapper.to_model(entity)
+        model.delete()
 
     def find_by_id(self, entity_id: str | UniqueEntityId) -> Optional[Category]:
         model = self._get(str(entity_id))
@@ -34,7 +39,31 @@ class CategoryDjangoRepository(CategoryRepository):
         ]
 
     def search(self, params: CategoryRepository.SearchParams) -> CategoryRepository.SearchResult:
-        raise NotImplementedError()
+        # Não executa a query ainda
+        query = CategoryModel.objects.all()
+
+        if params.filters:
+            # O __contains vem do lookup do django
+            query = query.filter(name__icontains=params.filters)
+
+        print(params.sort)
+        print("############################################")
+        if params.sort and params.sort in self.sortable_fields:
+            query = query.order_by(
+                params.sort
+                if params.sort_dir == "asc" else
+                f"-{params.sort}"
+            )
+        else:
+            query = query.order_by("-created_at")
+
+        paginator = Paginator(query, params.per_page)
+        page_obj = paginator.page(params.page)
+        return CategoryRepository.SearchResult(
+            search_params=params,
+            items=[CategoryDjangoModelMapper.to_entity(model) for model in page_obj.object_list],
+            total=paginator.count,
+        )
 
     def _get(self, entity_id: str) -> CategoryModel:
         try:

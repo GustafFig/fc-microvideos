@@ -27,6 +27,6 @@ class CategoryRepository(
     """
         Not InMemory because it is in the domain.
     """
-    sortable_fields = ["name", "is_active", "created_at"]
+    sortable_fields = ["name", "created_at"]
     SearchParams = _SearchParams
     SearchResult = _SearchResult
