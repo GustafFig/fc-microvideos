@@ -1,5 +1,6 @@
 from dataclasses import asdict, dataclass
 from typing import List, Optional
+from core.__seedwork.application.dto import PaginationOutput, PaginationOutputMapper
 
 from core.__seedwork.application.usecases import UseCase
 from core.__seedwork.domain.exceptions import EntityNotFound, MissingParameter
@@ -24,8 +25,8 @@ class CreateCategoryUseCase(UseCase):
     #    self.repo: CategoryRepository = repo
     repo: CategoryRepository
 
-    def execute(self, input_param: 'Input') -> 'Output':
-        raise NotImplementedError()
+    # def execute(self, input_param: 'Input') -> 'Output':
+    #     raise NotImplementedError()
 
     # with the __call__ is an python specific way
     def __call__(self, input_param: 'Input') -> 'Output':
@@ -94,13 +95,9 @@ class ListCategoriesUseCase(UseCase):
         search_params = self.repo.SearchParams(**asdict(input_param))
         result = self.repo.search(search_params)
         items = map(CategoryOutputMapper.without_child().to_output, result.items)
-        return self.Output(
-            items=list(items),
-            total=result.total,
-            last_page=result.last_page,
-            page=result.search_params.page,
-            per_page=result.search_params.per_page,
-        )
+        return PaginationOutputMapper\
+            .from_child(ListCategoriesUseCase.Output)\
+            .to_output(items, result)
 
     @dataclass(slots=True, frozen=True)
     class Input:
@@ -111,7 +108,7 @@ class ListCategoriesUseCase(UseCase):
         filters: str = CategoryRepository.SearchParams.get_field_default('filters')
 
     @dataclass(slots=True, frozen=True)
-    class Output:
+    class Output(PaginationOutput):
         items: List[CategoryOutput]
         total: int
         last_page: int

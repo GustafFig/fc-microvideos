@@ -1,6 +1,6 @@
 # pylint: disable=redefined-builtin
 # pylint: disable=invalid-name
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from typing import Callable, Optional
 
 from rest_framework.views import APIView
@@ -8,13 +8,16 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
+from core.__seedwork.infra.serializers import UUIDSerializer
+from core.category.application.dto import CategoryOutput
 from core.category.application.usecase import (
     CreateCategoryUseCase,
     DeleteCategoryUseCase,
     GetCategoryUseCase,
     ListCategoriesUseCase,
-    UpdateCategoryUseCase
+    UpdateCategoryUseCase,
 )
+from core.category.infra.serializer import CategorySerializer, CategoryCollectionSerializer
 
 
 @dataclass(slots=True)
@@ -27,28 +30,45 @@ class CategoryResource(APIView):
     delete_use_case: Optional[Callable[[], DeleteCategoryUseCase]] = None
 
     def post(self, req: Request):
-        input_param = CreateCategoryUseCase.Input(**req.data)
+        serializer = CategorySerializer(data=req.data)
+        serializer.is_valid(raise_exception=True)
+        input_param = CreateCategoryUseCase.Input(**serializer.validated_data)
         output = self.create_use_case()(input_param)
-        return Response(asdict(output), status=HTTP_201_CREATED)
+        body = self.category_to_response(output)
+        return Response(body, status=HTTP_201_CREATED)
 
     def get(self, req: Request, id: str = None):
         if id:
             return self.get_object(id=id)
         input_param = ListCategoriesUseCase.Input(**req.query_params.dict())
         output = self.list_use_case()(input_param)
-        return Response(asdict(output))
+        body = CategoryCollectionSerializer(instance=output).data
+        return Response(body)
 
     def get_object(self, id: str):
+        # TODO: add validate_id here
         input_param = GetCategoryUseCase.Input(id=id)
         output = self.get_use_case()(input_param)
-        return Response(asdict(output), HTTP_200_OK)
+        body = self.category_to_response(output)
+        return Response(body, HTTP_200_OK)
 
     def put(self, req: Request, id: str):
         input_param = UpdateCategoryUseCase.Input(**req.data, id=id)
         output = self.update_use_case()(input_param)
-        return Response(asdict(output), HTTP_200_OK)
+        body = self.category_to_response(output)
+        return Response(body, HTTP_200_OK)
 
     def delete(self, _req: Request, id: str):
         input_param = DeleteCategoryUseCase.Input(id=id)
         self.delete_use_case()(input_param)
         return Response(status=HTTP_204_NO_CONTENT)
+
+    @staticmethod
+    def category_to_response(output: CategoryOutput) -> CategorySerializer:
+        serializer = CategorySerializer(instance=output)
+        return serializer.data
+
+    @staticmethod
+    def validate_id(id: str):  # pylint: disable=redefined-builtin,invalid-name
+        serializer = UUIDSerializer(data={'id': id})
+        serializer.is_valid(raise_exception=True)

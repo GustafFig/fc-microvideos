@@ -1,5 +1,5 @@
-# pylint: disable=no-member
-from typing import Optional, List
+# pylint: disable=no-member,import-outside-toplevel
+from typing import Optional, List, TYPE_CHECKING, Type
 
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
@@ -9,10 +9,18 @@ from core.__seedwork.domain.value_objects import UniqueEntityId
 from core.category.domain.entities import Category
 from core.category.domain.repositories import CategoryRepository
 from core.category.infra.mapper import CategoryDjangoModelMapper
-from django_app.category.models import CategoryModel
+
+if TYPE_CHECKING:
+    from django_app.category.models import CategoryModel
 
 
 class CategoryDjangoRepository(CategoryRepository):
+
+    model: Type['CategoryModel']
+
+    def __init__(self) -> None:
+        from django_app.category.models import CategoryModel
+        self.model = CategoryModel
 
     def insert(self, entity: Category) -> None:
         model = CategoryDjangoModelMapper.to_model(entity)
@@ -35,19 +43,17 @@ class CategoryDjangoRepository(CategoryRepository):
     def find_all(self) -> List[Category]:
         return [
             CategoryDjangoModelMapper.to_entity(model)
-            for model in CategoryModel.objects.all()
+            for model in self.model.objects.all()
         ]
 
     def search(self, params: CategoryRepository.SearchParams) -> CategoryRepository.SearchResult:
         # Não executa a query ainda
-        query = CategoryModel.objects.all()
+        query = self.model.objects.all()
 
         if params.filters:
             # O __contains vem do lookup do django
             query = query.filter(name__icontains=params.filters)
 
-        print(params.sort)
-        print("############################################")
         if params.sort and params.sort in self.sortable_fields:
             query = query.order_by(
                 params.sort
@@ -65,8 +71,8 @@ class CategoryDjangoRepository(CategoryRepository):
             total=paginator.count,
         )
 
-    def _get(self, entity_id: str) -> CategoryModel:
+    def _get(self, entity_id: str) -> 'CategoryModel':
         try:
-            return CategoryModel.objects.get(pk=entity_id)
-        except (CategoryModel.DoesNotExist, ValidationError) as err:
+            return self.model.objects.get(pk=entity_id)
+        except (self.model.DoesNotExist, ValidationError) as err:
             raise EntityNotFound(Category) from err
