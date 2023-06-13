@@ -5,8 +5,6 @@ import pytest
 from core.__seedwork.infra.testing_helpers import make_request
 from core.category.infra.serializer import CategorySerializer
 from django_app.category.tests.helpers import init_category_resource_all_none
-from rest_framework.request import Request
-from rest_framework.test import APIRequestFactory
 
 from core.category.domain.repositories import CategoryRepository
 from django_app import container
@@ -29,16 +27,10 @@ class TestCategoryResourcePostMethodInt:
             create_use_case=container.Container.use_case_category_create_category
         )
 
-    @pytest.fixture()
-    def req(self):
-        request_factory = APIRequestFactory()
-        _request = request_factory.get('/categories')
-        return Request(_request)
-
     @pytest.mark.parametrize('http_expect', CreateCategoryApiFixture.arrange_for_save())
-    def test_post_method(self, http_expect: HttpExpect, req):
-        req._full_data = http_expect.request.body
-        response = self.resource.post(req)
+    def test_post_method(self, http_expect: HttpExpect):
+        request = make_request(http_method='post', send_data=http_expect.request.body)
+        response = self.resource.post(request)
         assert response.status_code == 201
         assert CategoryApiFixture.keys_in_category_response() == list(response.data.keys())
 

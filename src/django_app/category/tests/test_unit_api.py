@@ -4,6 +4,7 @@ import datetime
 import unittest
 from unittest.mock import MagicMock, Mock, patch
 from core.__seedwork.infra.serializers import ISO_8601
+from core.__seedwork.infra.testing_helpers import make_request
 from django_app.category.tests.helpers import init_category_resource_all_none
 
 from rest_framework.test import APIRequestFactory
@@ -59,9 +60,7 @@ class TestCategoryResourceUnit(unittest.TestCase):
         )
 
         send_data = {'name': 'Movie'}
-        _req = APIRequestFactory().post('/categories')
-        request = Request(_req)
-        request._full_data = send_data
+        request = make_request('post', '/categories', send_data)
 
         stub_serializer = StubCategorySerializer()
         mock_category_to_response.return_value = expected_response
@@ -106,9 +105,11 @@ class TestCategoryResourceUnit(unittest.TestCase):
         )
 
         send_data = {'name': 'Movie'}
-        _req = APIRequestFactory().get('/?page=1&per_page=1&sort=name&sort_dir=asc&filters=test')
-        request = Request(_req)
-        request._full_data = send_data
+        request = make_request(
+            'get',
+            '/?page=1&per_page=1&sort=name&sort_dir=asc&filters=test',
+            send_data
+        )
         response = resource.get(request)
         mock_list_use_case.assert_called_once_with(
             ListCategoriesUseCase.Input(
@@ -135,8 +136,7 @@ class TestCategoryResourceUnit(unittest.TestCase):
             get_use_case=lambda: mock_get_use_case
         )
 
-        _req = APIRequestFactory().get('/categories/fakeid')
-        request = Request(_req)
+        request = make_request('get', '/categories/fakeid')
         response = resource.get(request, id="fakeid")
         mock_get_use_case.assert_called_once_with(
             GetCategoryUseCase.Input(id="fakeid")
@@ -152,8 +152,7 @@ class TestCategoryResourceUnit(unittest.TestCase):
 
         mock_list_use_case = Mock()
 
-        _req = APIRequestFactory().get('/categories/fakeid')
-        request = Request(_req)
+        request = make_request("get", '/categories/fakeid')
         resource = init_category_resource_all_none(
             CategoryResource,
             list_use_case=mock_list_use_case,
@@ -184,9 +183,7 @@ class TestCategoryResourceUnit(unittest.TestCase):
             update_use_case=lambda: mock_update_use_case
         )
 
-        _req = APIRequestFactory().put('/categories/fakeid', send_data)
-        request = Request(_req)
-        request._full_data = send_data
+        request = make_request('put', '/categories/fakeid', send_data)
         response = resource.put(request, id="fakeid")
         mock_update_use_case.assert_called_once_with(
             UpdateCategoryUseCase.Input(
@@ -213,20 +210,9 @@ class TestCategoryResourceUnit(unittest.TestCase):
             delete_use_case=lambda: mock_delete_use_case
         )
 
-        _req = APIRequestFactory().delete('/categories/fakeid')
-        request = Request(_req)
+        request = make_request('delete', '/categories/fakeid')
         response = resource.delete(request, id="fakeid")
         mock_delete_use_case.assert_called_once_with(
             DeleteCategoryUseCase.Input(id="fakeid")
         )
         self.assertEqual(response.status_code, 204)
-
-    def __resource_tests(self, **kwargs):
-        default = {
-            "create_use_case": None,
-            "list_use_case": None,
-            "get_use_case": None,
-            "update_use_case": None,
-            "delete_use_case": None,
-        } | kwargs
-        return CategoryResource(**default)
