@@ -31,6 +31,11 @@ class CategoryDjangoRepository(CategoryRepository):
         model = CategoryDjangoModelMapper.to_model(entity)
         model.save()
 
+    def bulk_insert(self, entities: List[Category]) -> None:
+        self.model.objects.bulk_create(
+            [CategoryDjangoModelMapper.to_model(entity) for entity in entities]
+        )
+
     def delete(self, entity: Category) -> None:
         self._get(entity.id)
         model = CategoryDjangoModelMapper.to_model(entity)

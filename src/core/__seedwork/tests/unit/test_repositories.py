@@ -20,7 +20,7 @@ class TestRepositoryInterface(unittest.TestCase):
         self.assertEqual(
             err.exception.args[0],
             "Can't instantiate abstract class RepositoryInterface with abstract "
-            "methods delete, find_all, find_by_id, insert, update"
+            "methods bulk_insert, delete, find_all, find_by_id, insert, update"
         )
 
 
@@ -289,7 +289,7 @@ class TestSearchblaeRepositoryInterface(unittest.TestCase):
         self.assertEqual(
             err.exception.args[0],
             "Can't instantiate abstract class SearchableRepositoryInterface with abstract "
-            "methods delete, find_all, find_by_id, insert, search, update"
+            "methods bulk_insert, delete, find_all, find_by_id, insert, search, update"
         )
 
 
