@@ -37,3 +37,8 @@ class Category(Entity, ToggleIsActive):
         is_category_valid = validator.validate(self.to_dict())
         if not is_category_valid:
             raise ValidationException(validator.errors)
+
+    @staticmethod
+    def fake():
+        from .entities_faker_builder import CategoryFakerBuilder # pylint: disable=import-outside-toplevel
+        return CategoryFakerBuilder

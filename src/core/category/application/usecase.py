@@ -94,7 +94,7 @@ class ListCategoriesUseCase(UseCase):
     def __call__(self, input_param: 'Input') -> 'Output':
         search_params = self.repo.SearchParams(**asdict(input_param))
         result = self.repo.search(search_params)
-        items = map(CategoryOutputMapper.without_child().to_output, result.items)
+        items = [CategoryOutputMapper.without_child().to_output(item) for item in result.items]
         return PaginationOutputMapper\
             .from_child(ListCategoriesUseCase.Output)\
             .to_output(items, result)
@@ -136,7 +136,7 @@ class UpdateCategoryUseCase(UseCase):
 
         self.repo.update(category)
 
-        return CategoryOutputMapper().to_output(category)
+        return CategoryOutputMapper(self.Output).to_output(category)
 
     @dataclass(frozen=True, slots=True)
     class Input:

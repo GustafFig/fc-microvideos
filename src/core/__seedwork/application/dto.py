@@ -29,7 +29,7 @@ class PaginationOutputMapper:
         return self.output_child(
             items=items,
             total=result.total,
-            current_page=result.page,
-            per_page=result.per_page,
+            page=result.search_params.page,
+            per_page=result.search_params.per_page,
             last_page=result.last_page
         )

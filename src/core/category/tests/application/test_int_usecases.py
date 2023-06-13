@@ -1,7 +1,6 @@
-import datetime
-import pytest
 import unittest
-
+import pytest
+import datetime
 from core.category.application.dto import CategoryOutput, CategoryOutputMapper
 from core.category.application.usecase import (
     CreateCategoryUseCase,
@@ -11,8 +10,8 @@ from core.category.application.usecase import (
     DeleteCategoryUseCase
 )
 from core.category.domain.entities import Category
-from django_app.category.repositories import CategoryDjangoRepository
 from core.__seedwork.domain.exceptions import EntityNotFound
+from django_app.category.repositories import CategoryDjangoRepository
 
 
 @pytest.mark.django_db
@@ -115,18 +114,18 @@ class TestGetCategoryUseCaseInt(unittest.TestCase):
         self.assertEqual(
             assert_error.exception.args[0], "Category not found")
 
-    # def test_execute(self):
-    #     entity = Category.fake().a_category().build()
-    #     self.repo.insert(entity)
-    #     input_param = GetCategoryUseCase.Input(entity.id)
-    #     output = self.use_case.execute(input_param)
-    #     self.assertEqual(output, GetCategoryUseCase.Output(
-    #         id=str(entity.id),
-    #         name=entity.name,
-    #         description=entity.description,
-    #         is_active=entity.is_active,
-    #         created_at=entity.created_at
-    #     ))
+    def test_execute(self):
+        entity = Category.fake().a_category().build()
+        self.repo.insert(entity)
+        input_param = GetCategoryUseCase.Input(entity.id)
+        output = self.use_case.execute(input_param)
+        self.assertEqual(output, GetCategoryUseCase.Output(
+            id=str(entity.id),
+            name=entity.name,
+            description=entity.description,
+            is_active=entity.is_active,
+            created_at=entity.created_at
+        ))
 
 
 @pytest.mark.django_db
@@ -139,111 +138,111 @@ class TestListCategoriesUseCaseInt(unittest.TestCase):
         self.repo = CategoryDjangoRepository()
         self.use_case = ListCategoriesUseCase(self.repo)
 
-    # def test_execute_using_empty_search_params(self):
-    #     categories = Category.fake()\
-    #         .the_categories(2)\
-    #         .with_created_at(
-    #         lambda index: datetime.datetime.now(
-    #             datetime.timezone.utc) + datetime.timedelta(days=index)
-    #     ).build()
-    #     self.repo.bulk_insert(categories)
-    #     input_param = ListCategoriesUseCase.Input()
-    #     output = self.use_case.execute(input_param)
-    #     self.assertEqual(output, ListCategoriesUseCase.Output(
-    #         items=[
-    #             self.from_entity_to_output(categories[1]),
-    #             self.from_entity_to_output(categories[0]),
-    #         ],
-    #         total=2,
-    #         current_page=1,
-    #         per_page=15,
-    #         last_page=1
-    #     ))
+    def test_execute_using_empty_search_params(self):
+        categories = Category.fake()\
+            .the_categories(2)\
+            .with_created_at(
+            lambda index: datetime.datetime.now(
+                datetime.timezone.utc) + datetime.timedelta(days=index)
+        ).build()
+        self.repo.bulk_insert(categories)
+        input_param = ListCategoriesUseCase.Input()
+        output = self.use_case.execute(input_param)
+        self.assertEqual(output, ListCategoriesUseCase.Output(
+            items=[
+                self.from_entity_to_output(categories[1]),
+                self.from_entity_to_output(categories[0]),
+            ],
+            total=2,
+            page=1,
+            per_page=15,
+            last_page=1
+        ))
 
-    # def test_execute_using_pagination_and_sort_and_filter(self):
-    #     faker = Category.fake().a_category()
-    #     entities = [
-    #         faker.with_name('a').build(),
-    #         faker.with_name('AAA').build(),
-    #         faker.with_name('AaA').build(),
-    #         faker.with_name('b').build(),
-    #         faker.with_name('c').build(),
-    #     ]
-    #     self.repo.bulk_insert(entities)
+    def test_execute_using_pagination_and_sort_and_filter(self):
+        faker = Category.fake().a_category()
+        entities = [
+            faker.with_name('a').build(),
+            faker.with_name('AAA').build(),
+            faker.with_name('AaA').build(),
+            faker.with_name('b').build(),
+            faker.with_name('c').build(),
+        ]
+        self.repo.bulk_insert(entities)
 
-    #     input_param = ListCategoriesUseCase.Input(
-    #         page=1,
-    #         per_page=2,
-    #         sort='name',
-    #         sort_dir='asc',
-    #         filter='a'
-    #     )
-    #     output = self.use_case.execute(input_param)
-    #     self.assertEqual(output, ListCategoriesUseCase.Output(
-    #         items=[
-    #             self.from_entity_to_output(entities[1]),
-    #             self.from_entity_to_output(entities[2]),
-    #         ],
-    #         total=3,
-    #         current_page=1,
-    #         per_page=2,
-    #         last_page=2
-    #     ))
+        input_param = ListCategoriesUseCase.Input(
+            page=1,
+            per_page=2,
+            sort='name',
+            sort_dir='asc',
+            filters='a'
+        )
+        output = self.use_case.execute(input_param)
+        self.assertEqual(output, ListCategoriesUseCase.Output(
+            items=[
+                self.from_entity_to_output(entities[1]),
+                self.from_entity_to_output(entities[2]),
+            ],
+            total=3,
+            page=1,
+            per_page=2,
+            last_page=2
+        ))
 
-    #     input_param = ListCategoriesUseCase.Input(
-    #         page=2,
-    #         per_page=2,
-    #         sort='name',
-    #         sort_dir='asc',
-    #         filter='a'
-    #     )
-    #     output = self.use_case.execute(input_param)
-    #     self.assertEqual(output, ListCategoriesUseCase.Output(
-    #         items=[
-    #             self.from_entity_to_output(entities[0]),
-    #         ],
-    #         total=3,
-    #         current_page=2,
-    #         per_page=2,
-    #         last_page=2
-    #     ))
+        input_param = ListCategoriesUseCase.Input(
+            page=2,
+            per_page=2,
+            sort='name',
+            sort_dir='asc',
+            filters='a'
+        )
+        output = self.use_case.execute(input_param)
+        self.assertEqual(output, ListCategoriesUseCase.Output(
+            items=[
+                self.from_entity_to_output(entities[0]),
+            ],
+            total=3,
+            page=2,
+            per_page=2,
+            last_page=2
+        ))
 
-    #     input_param = ListCategoriesUseCase.Input(
-    #         page=1,
-    #         per_page=2,
-    #         sort='name',
-    #         sort_dir='desc',
-    #         filter='a'
-    #     )
-    #     output = self.use_case.execute(input_param)
-    #     self.assertEqual(output, ListCategoriesUseCase.Output(
-    #         items=[
-    #             self.from_entity_to_output(entities[0]),
-    #             self.from_entity_to_output(entities[2]),
-    #         ],
-    #         total=3,
-    #         current_page=1,
-    #         per_page=2,
-    #         last_page=2
-    #     ))
+        input_param = ListCategoriesUseCase.Input(
+            page=1,
+            per_page=2,
+            sort='name',
+            sort_dir='desc',
+            filters='a'
+        )
+        output = self.use_case.execute(input_param)
+        self.assertEqual(output, ListCategoriesUseCase.Output(
+            items=[
+                self.from_entity_to_output(entities[0]),
+                self.from_entity_to_output(entities[2]),
+            ],
+            total=3,
+            page=1,
+            per_page=2,
+            last_page=2
+        ))
 
-    #     input_param = ListCategoriesUseCase.Input(
-    #         page=2,
-    #         per_page=2,
-    #         sort='name',
-    #         sort_dir='desc',
-    #         filter='a'
-    #     )
-    #     output = self.use_case.execute(input_param)
-    #     self.assertEqual(output, ListCategoriesUseCase.Output(
-    #         items=[
-    #             self.from_entity_to_output(entities[1]),
-    #         ],
-    #         total=3,
-    #         current_page=2,
-    #         per_page=2,
-    #         last_page=2
-    #     ))
+        input_param = ListCategoriesUseCase.Input(
+            page=2,
+            per_page=2,
+            sort='name',
+            sort_dir='desc',
+            filters='a'
+        )
+        output = self.use_case.execute(input_param)
+        self.assertEqual(output, ListCategoriesUseCase.Output(
+            items=[
+                self.from_entity_to_output(entities[1]),
+            ],
+            total=3,
+            page=2,
+            per_page=2,
+            last_page=2
+        ))
 
     def from_entity_to_output(self, entity: Category) -> CategoryOutput:
         return CategoryOutputMapper.without_child().to_output(entity)
@@ -266,110 +265,114 @@ class TestUpdateCategoryUseCaseInt(unittest.TestCase):
         self.assertEqual(
             assert_error.exception.args[0], "Category not found")
 
-    # def test_execute(self):
-    #     entity = Category.fake().a_category().build()
-    #     self.repo.insert(entity)
-    #     request = UpdateCategoryUseCase.Input(
-    #         id=entity.id,
-    #         name='test 1',
-    #     )
-    #     response = self.use_case.execute(request)
-    #     self.assertEqual(response, UpdateCategoryUseCase.Output(
-    #         id=str(entity.id),
-    #         name='test 1',
-    #         description=None,
-    #         is_active=True,
-    #         created_at=entity.created_at
-    #     ))
+    def test_execute(self):
+        entity = Category.fake().a_category().build()
+        self.repo.insert(entity)
+        request = UpdateCategoryUseCase.Input(
+            id=entity.id,
+            name='test 1',
+            description=None,
+        )
+        response = self.use_case.execute(request)
+        self.assertEqual(response, UpdateCategoryUseCase.Output(
+            id=str(entity.id),
+            name='test 1',
+            description=None,
+            is_active=True,
+            created_at=entity.created_at
+        ))
 
-    #     arrange = [
-    #         {
-    #             'input': {
-    #                 'id': str(entity.id),
-    #                 'name': 'test 2',
-    #                 'description': 'test description',
-    #             },
-    #             'expected': {
-    #                 'id': str(entity.id),
-    #                 'name': 'test 2',
-    #                 'description': 'test description',
-    #                 'is_active': True,
-    #                 'created_at': entity.created_at
-    #             }
-    #         },
-    #         {
-    #             'input': {
-    #                 'id': str(entity.id),
-    #                 'name': 'test',
-    #             },
-    #             'expected': {
-    #                 'id': str(entity.id),
-    #                 'name': 'test',
-    #                 'description': None,
-    #                 'is_active': True,
-    #                 'created_at': entity.created_at
-    #             }
-    #         },
-    #         {
-    #             'input': {
-    #                 'id': str(entity.id),
-    #                 'name': 'test',
-    #                 'is_active': False,
-    #             },
-    #             'expected': {
-    #                 'id': str(entity.id),
-    #                 'name': 'test',
-    #                 'description': None,
-    #                 'is_active': False,
-    #                 'created_at': entity.created_at
-    #             }
-    #         },
-    #         {
-    #             'input': {
-    #                 'id': str(entity.id),
-    #                 'name': 'test',
-    #                 'is_active': True
-    #             },
-    #             'expected': {
-    #                 'id': str(entity.id),
-    #                 'name': 'test',
-    #                 'description': None,
-    #                 'is_active': True,
-    #                 'created_at': entity.created_at
-    #             }
-    #         },
-    #         {
-    #             'input': {
-    #                 'id': str(entity.id),
-    #                 'name': 'test',
-    #                 'description': 'test description',
-    #                 'is_active': False
-    #             },
-    #             'expected': {
-    #                 'id': str(entity.id),
-    #                 'name': 'test',
-    #                 'description': 'test description',
-    #                 'is_active': False,
-    #                 'created_at': entity.created_at
-    #             }
-    #         }
-    #     ]
+        arrange = [
+            {
+                'input': {
+                    'id': str(entity.id),
+                    'name': 'test 2',
+                    'description': 'test description',
+                },
+                'expected': {
+                    'id': str(entity.id),
+                    'name': 'test 2',
+                    'description': 'test description',
+                    'is_active': True,
+                    'created_at': entity.created_at
+                }
+            },
+            {
+                'input': {
+                    'id': str(entity.id),
+                    'name': 'test',
+                    'description': None,
+                },
+                'expected': {
+                    'id': str(entity.id),
+                    'name': 'test',
+                    'description': None,
+                    'is_active': True,
+                    'created_at': entity.created_at
+                }
+            },
+            {
+                'input': {
+                    'id': str(entity.id),
+                    'name': 'test',
+                    'is_active': False,
+                    'description': None,
+                },
+                'expected': {
+                    'id': str(entity.id),
+                    'name': 'test',
+                    'description': None,
+                    'is_active': False,
+                    'created_at': entity.created_at
+                }
+            },
+            {
+                'input': {
+                    'id': str(entity.id),
+                    'name': 'test',
+                    'is_active': True,
+                    'description': None,
+                },
+                'expected': {
+                    'id': str(entity.id),
+                    'name': 'test',
+                    'description': None,
+                    'is_active': True,
+                    'created_at': entity.created_at
+                }
+            },
+            {
+                'input': {
+                    'id': str(entity.id),
+                    'name': 'test',
+                    'description': 'test description',
+                    'is_active': False
+                },
+                'expected': {
+                    'id': str(entity.id),
+                    'name': 'test',
+                    'description': 'test description',
+                    'is_active': False,
+                    'created_at': entity.created_at
+                }
+            }
+        ]
 
-    #     for i in arrange:
-    #         input_param = i['input']
-    #         expected = i['expected']
-    #         request = UpdateCategoryUseCase.Input(**input_param)
-    #         response = self.use_case.execute(request)
-    #         self.assertEqual(
-    #             response,
-    #             UpdateCategoryUseCase.Output(**expected)
-    #         )
+        for i in arrange:
+            input_param = i['input']
+            expected = i['expected']
+            request = UpdateCategoryUseCase.Input(**input_param)
+            response = self.use_case.execute(request)
+            self.assertEqual(
+                response,
+                UpdateCategoryUseCase.Output(**expected)
+            )
 
-    #         category = self.repo.find_by_id(expected['id'])
-    #         self.assertEqual(category.name, expected['name'])
-    #         self.assertEqual(category.description, expected['description'])
-    #         self.assertEqual(category.is_active, expected['is_active'])
-    #         self.assertEqual(category.created_at, expected['created_at'])
+            category = self.repo.find_by_id(expected['id'])
+            self.assertEqual(category.name, expected['name'])
+            self.assertEqual(category.description, expected['description'])
+            self.assertEqual(category.is_active, expected['is_active'])
+            self.assertEqual(category.created_at, expected['created_at'])
 
 
 @pytest.mark.django_db
@@ -389,15 +392,15 @@ class TestDeleteCategoryUseCaseInt(unittest.TestCase):
         self.assertEqual(
             assert_error.exception.args[0], "Category not found")
 
-    # def test_execute(self):
-    #     entity = Category.fake().a_category().build()
-    #     self.repo.insert(entity)
-    #     request = DeleteCategoryUseCase.Input(id=entity.id)
-    #     self.use_case.execute(request)
+    def test_execute(self):
+        entity = Category.fake().a_category().build()
+        self.repo.insert(entity)
+        request = DeleteCategoryUseCase.Input(id=entity.id)
+        self.use_case.execute(request)
 
-    #     with self.assertRaises(EntityNotFound) as assert_error:
-    #         self.repo.find_by_id(entity.id)
-    #     self.assertEqual(
-    #         assert_error.exception.args[0],
-    #         f"Entity not found using ID '{entity.id}'"
-    #     )
+        with self.assertRaises(EntityNotFound) as assert_error:
+            self.repo.find_by_id(entity.id)
+        self.assertEqual(
+            assert_error.exception.args[0],
+            f"Category not found"
+        )
