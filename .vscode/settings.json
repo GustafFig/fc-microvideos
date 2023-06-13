@@ -15,7 +15,7 @@
     ],
     "python.analysis.autoImportCompletions": true,
     "python.testing.unittestArgs": [
-        "-v",
+        "-vvv",
         "-s",
         "./src",
         "-p",
@@ -25,7 +25,8 @@
         "src",
         "--ignore",
         "__pypackages__",
-        "-s"
+        "-s",
+        "-vvv"
     ],
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false

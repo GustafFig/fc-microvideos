@@ -33,7 +33,8 @@ class CategoryResource(APIView):
         serializer = CategorySerializer(data=req.data)
         serializer.is_valid(raise_exception=True)
         input_param = CreateCategoryUseCase.Input(**serializer.validated_data)
-        output = self.create_use_case()(input_param)
+        method = self.create_use_case()
+        output = method(input_param)
         body = self.category_to_response(output)
         return Response(body, status=HTTP_201_CREATED)
 

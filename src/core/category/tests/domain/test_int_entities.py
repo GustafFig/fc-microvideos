@@ -44,10 +44,13 @@ class TestCategoryIntegration(unittest.TestCase):
                          assert_error.exception.error['description'])
 
     def test_create_with_invalid_cases_for_is_active(self):
-        with self.assertRaises(ValidationException) as assert_error:
-            Category(name=None, is_active=5)  # type: ignore
-        self.assertEqual(['Must be a valid boolean.'],
-                         assert_error.exception.error['is_active'])
+        for invalid in [5, '']:
+            with self.assertRaises(ValidationException) as assert_error:
+                Category(name=None, is_active=invalid)  # type: ignore
+            self.assertEqual(['Must be a valid boolean.'],
+                            assert_error.exception.error['is_active'])
+            self.assertEqual(['This field may not be null.'],
+                            assert_error.exception.error['name'])
 
     def test_create_with_valid_cases(self):
 
@@ -84,7 +87,7 @@ class TestCategoryIntegration(unittest.TestCase):
             {
                 'data': {'name': "t" * 256, 'description': None},
                 'expected': 'Ensure this field has no more than 255 characters.'
-            }
+            },
         ]
 
         for i in invalid_data:
