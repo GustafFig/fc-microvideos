@@ -35,13 +35,14 @@ class TestCategoryResourcePostMethodInt:
         request = make_request(http_method='post', send_data=http_expect.request.body)
         response = self.resource.post(request)
         assert response.status_code == 201
-        assert CreateCategoryApiFixture.keys_in_category_response() == list(response.data.keys())
+        expected_keys = CreateCategoryApiFixture.keys_in_category_response()
+        assert expected_keys == list(response.data["data"].keys())
 
-        category_created = self.repo.find_by_id(response.data["id"])
+        category_created = self.repo.find_by_id(response.data["data"]["id"])
         serialized = CategoryResource.category_to_response(category_created)
         assert response.data == serialized
 
-        assert_response_data(response.data, http_expect.response.body)
+        assert_response_data(response.data["data"], http_expect.response.body)
 
     @pytest.mark.parametrize(
         'http_expect', CreateCategoryApiFixture.arrange_for_entity_validation_error()

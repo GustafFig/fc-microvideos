@@ -26,7 +26,8 @@ class TestCategoryResourceCommonMethodsInt:
             created_at=timezone.now()
         )
         data = CategoryResource.category_to_response(output)
-        assert data == {
+        assert "data" in data
+        assert data["data"] == {
             'id': 'fake id',
             'name': 'category test',
             'description': 'description test',

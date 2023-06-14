@@ -144,11 +144,13 @@ class TestCategoryResourceUnit(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, {
-            "id": "fakeid",
-            "name": "Movie",
-            "description": None,
-            "is_active": None,
-            "created_at": mock_get_use_case.return_value.created_at,
+            "data": {
+                "id": "fakeid",
+                "name": "Movie",
+                "description": None,
+                "is_active": None,
+                "created_at": mock_get_use_case.return_value.created_at,
+            }
         })
 
         mock_list_use_case = Mock()
@@ -199,11 +201,13 @@ class TestCategoryResourceUnit(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, {
-            "id": "fakeid",
-            "name": send_data["name"],
-            "description": send_data["description"],
-            "is_active": send_data["is_active"],
-            "created_at": mock_update_use_case.return_value.created_at,
+            "data": {
+                "id": "fakeid",
+                "name": send_data["name"],
+                "description": send_data["description"],
+                "is_active": send_data["is_active"],
+                "created_at": mock_update_use_case.return_value.created_at,
+            }
         })
 
     @patch.object(CategoryResource, 'validate_id')

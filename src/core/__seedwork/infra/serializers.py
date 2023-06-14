@@ -15,6 +15,13 @@ class PaginationSerializer(serializers.Serializer): # pylint: disable=abstract-m
     per_page = serializers.IntegerField()
     last_page = serializers.IntegerField()
 
+class ResourceSerializer(serializers.Serializer): # pylint: disable=abstract-method
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        print(data)
+        return {
+            'data': data
+        }
 
 class CollectionSerializer(serializers.ListSerializer):  # pylint: disable=abstract-method
     pagination: PaginationOutput
@@ -31,8 +38,11 @@ class CollectionSerializer(serializers.ListSerializer):  # pylint: disable=abstr
     def to_representation(self, data):
         return {
             'data': [
-                # todo - verificar se tem data ou não
-                self.child.to_representation(item) for item in data
+                self.child.to_representation(item)['data'] for item in data
             ],
             'meta': PaginationSerializer(self.pagination).data
         }
+
+    @property
+    def data(self):
+        return self.to_representation(self.instance)

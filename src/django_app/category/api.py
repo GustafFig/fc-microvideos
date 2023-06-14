@@ -44,8 +44,9 @@ class CategoryResource(APIView):
             return self.get_object(id=id)
         input_param = ListCategoriesUseCase.Input(**req.query_params.dict())
         output = self.list_use_case()(input_param)
-        body = CategoryCollectionSerializer(instance=output).data
-        return Response(body)
+        data = CategoryCollectionSerializer(instance=output).data
+        return Response(data)
+
 
     def get_object(self, id: str):
         CategoryResource.validate_id(id)
@@ -56,7 +57,6 @@ class CategoryResource(APIView):
 
     def put(self, req: Request, id: str):  # pylint: disable=redefined-builtin,invalid-name
         CategoryResource.validate_id(id)
-
         serializer = CategorySerializer(data=req.data)
         serializer.is_valid(raise_exception=True)
         input_param = UpdateCategoryUseCase.Input(

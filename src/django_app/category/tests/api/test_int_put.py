@@ -75,7 +75,7 @@ class TestCategoryResourcePutMethodInt:
         with pytest.raises(EntityNotFound) as assert_exception:
             self.resource.put(request, uuid_value)
         error_message = assert_exception.value.args[0]
-        assert error_message == f"Category not found"
+        assert error_message == "Category not found"
 
     @pytest.mark.parametrize('http_expect', UpdateCategoryApiFixture.arrange_for_save())
     def test_put_method(self, http_expect: HttpExpect):
@@ -86,15 +86,18 @@ class TestCategoryResourcePutMethodInt:
         response = self.resource.put(request, category.id)
 
         assert response.status_code == 200
-        assert UpdateCategoryApiFixture.keys_in_category_response() == list(response.data.keys())
+        expected_keys = UpdateCategoryApiFixture.keys_in_category_response()
+        assert expected_keys == list(response.data['data'].keys())
 
-        response_data = response.data
+        response_data = response.data["data"]
         category_updated = self.repo.find_by_id(response_data['id'])
         serialized = CategoryResource.category_to_response(category_updated)
 
         assert response.data == serialized
         assert response.data == {
-            **http_expect.response.body,
-            'id': category_updated.id,
-            'created_at': serialized['created_at'],
+            "data": {
+                **http_expect.response.body,
+                'id': category_updated.id,
+                'created_at': serialized["data"]['created_at'],
+            }
         }
