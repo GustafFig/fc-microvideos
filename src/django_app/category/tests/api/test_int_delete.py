@@ -1,11 +1,10 @@
 import pytest
-
 from rest_framework.exceptions import ErrorDetail, ValidationError
 
 from core.__seedwork.domain.exceptions import EntityNotFound
+from core.__seedwork.infra.testing_helpers import make_request
 from core.category.domain.entities import Category
 from core.category.domain.repositories import CategoryRepository
-from core.__seedwork.infra.testing_helpers import make_request
 from django_app import container
 from django_app.category.api import CategoryResource
 from django_app.category.tests.helpers import init_category_resource_all_none

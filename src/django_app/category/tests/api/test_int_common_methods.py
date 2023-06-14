@@ -1,8 +1,8 @@
 import pytest
 from django.utils import timezone
-from core.__seedwork.infra.serializers import ISO_8601
 from rest_framework.exceptions import ErrorDetail, ValidationError
 
+from core.__seedwork.infra.serializers import ISO_8601
 from core.category.application.dto import CategoryOutput
 from django_app.category.api import CategoryResource
 from django_app.category.tests.helpers import init_category_resource_all_none

@@ -1,25 +1,20 @@
-# pylint: disable=protected-access)
-from collections import namedtuple
+# pylint: disable=protected-access
 import datetime
 import unittest
+from collections import namedtuple
 from unittest.mock import MagicMock, Mock, patch
+
 from core.__seedwork.infra.serializers import ISO_8601
 from core.__seedwork.infra.testing_helpers import make_request
-from django_app.category.tests.helpers import init_category_resource_all_none
-
-from rest_framework.test import APIRequestFactory
-from rest_framework.request import Request
-
-from core.category.infra.serializer import CategorySerializer
-from core.category.application.usecase import (
-    CreateCategoryUseCase,
-    DeleteCategoryUseCase,
-    GetCategoryUseCase,
-    ListCategoriesUseCase,
-    UpdateCategoryUseCase,
-)
 from core.category.application.dto import CategoryOutput
+from core.category.application.usecase import (CreateCategoryUseCase,
+                                               DeleteCategoryUseCase,
+                                               GetCategoryUseCase,
+                                               ListCategoriesUseCase,
+                                               UpdateCategoryUseCase)
+from core.category.infra.serializer import CategorySerializer
 from django_app.category.api import CategoryResource
+from django_app.category.tests.helpers import init_category_resource_all_none
 
 
 class StubCategorySerializer:
@@ -29,6 +24,7 @@ class StubCategorySerializer:
     def is_valid(self, raise_exception: bool):
         pass
 
+
 class TestCategoryResourceUnit(unittest.TestCase):
 
     @patch.object(CategorySerializer, '__new__')
@@ -36,7 +32,7 @@ class TestCategoryResourceUnit(unittest.TestCase):
         mock_serializer.return_value = namedtuple('Faker', ['data'])(data='test')
         data = CategoryResource.category_to_response('output')
         mock_serializer.assert_called_with(
-            CategorySerializer, 
+            CategorySerializer,
             instance='output'
         )
         self.assertEqual(data, 'test')

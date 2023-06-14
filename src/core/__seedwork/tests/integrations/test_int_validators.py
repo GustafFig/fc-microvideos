@@ -8,7 +8,8 @@ import unittest
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.serializers import Serializer
 
-from core.__seedwork.domain.validators import StrictBooleanField, StrictCharField
+from core.__seedwork.domain.validators import (StrictBooleanField,
+                                               StrictCharField)
 
 
 class TestStrictCharField(unittest.TestCase):

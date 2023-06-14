@@ -1,6 +1,7 @@
 
-from datetime import datetime
 import unittest
+from datetime import datetime
+
 from core.__seedwork.domain.value_objects import UniqueEntityId
 from core.category.domain.entities_faker_builder import CategoryFakerBuilder
 
@@ -10,7 +11,7 @@ class TestCategoryFakeBuilder(unittest.TestCase):
     def test_unique_entity_id_prop_throw_exception_when_is_none(self):
         with self.assertRaises(Exception) as assert_exception:
             faker = CategoryFakerBuilder.a_category()
-            faker.unique_entity_id
+            faker.unique_entity_id  # pylint: disable=pointless-statement
         self.assertEqual(
             str(assert_exception.exception),
             'Prop unique_entity_id not have a factory, use "with methods"'
@@ -75,7 +76,7 @@ class TestCategoryFakeBuilder(unittest.TestCase):
     def test_created_at_prop_throw_exception_when_is_none(self):
         with self.assertRaises(Exception) as assert_exception:
             faker = CategoryFakerBuilder.a_category()
-            faker.created_at
+            faker.created_at  # pylint: disable=pointless-statement
         self.assertEqual(
             str(assert_exception.exception),
             'Prop created_at not have a factory, use "with methods"'

@@ -1,11 +1,10 @@
 from dependency_injector import containers, providers
-from core.category.application.usecase import (
-    CreateCategoryUseCase,
-    DeleteCategoryUseCase,
-    GetCategoryUseCase,
-    ListCategoriesUseCase,
-    UpdateCategoryUseCase,
-)
+
+from core.category.application.usecase import (CreateCategoryUseCase,
+                                               DeleteCategoryUseCase,
+                                               GetCategoryUseCase,
+                                               ListCategoriesUseCase,
+                                               UpdateCategoryUseCase)
 from core.category.infra.repositories import InMemoryCategoryRepository
 from django_app.category.repositories import CategoryDjangoRepository
 

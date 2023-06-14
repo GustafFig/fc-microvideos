@@ -1,12 +1,14 @@
 
+import datetime
 from collections import namedtuple
 from dataclasses import dataclass
-import datetime
 from typing import Any, Optional
+
 import pytest
 from rest_framework.exceptions import ErrorDetail, ValidationError
-from core.category.domain.entities import Category
+
 from core.__seedwork.domain.exceptions import ValidationException
+from core.category.domain.entities import Category
 
 
 @dataclass

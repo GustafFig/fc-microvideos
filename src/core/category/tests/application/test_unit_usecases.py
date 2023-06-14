@@ -1,12 +1,16 @@
 import unittest
 from typing import Optional
 from unittest.mock import patch
-from core.__seedwork.application.usecases import UseCase
 
-from core.__seedwork.domain.exceptions import EntityNotFound, MissingParameter, ValidationException
+from core.__seedwork.application.usecases import UseCase
+from core.__seedwork.domain.exceptions import (EntityNotFound,
+                                               MissingParameter,
+                                               ValidationException)
 from core.category.application.dto import CategoryOutputMapper
-from core.category.application.usecase import (CreateCategoryUseCase, DeleteCategoryUseCase,
-                                               GetCategoryUseCase, UpdateCategoryUseCase)
+from core.category.application.usecase import (CreateCategoryUseCase,
+                                               DeleteCategoryUseCase,
+                                               GetCategoryUseCase,
+                                               UpdateCategoryUseCase)
 from core.category.domain.entities import Category
 from core.category.infra.repositories import InMemoryCategoryRepository
 

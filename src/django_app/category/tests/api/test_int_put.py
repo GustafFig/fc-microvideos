@@ -1,18 +1,16 @@
-from unittest.mock import PropertyMock, patch
 import pytest
-from core.__seedwork.domain.exceptions import EntityNotFound
+from rest_framework.exceptions import ErrorDetail, ValidationError
 
+from core.__seedwork.domain.exceptions import EntityNotFound
 from core.__seedwork.infra.testing_helpers import make_request
 from core.category.domain.entities import Category
-from core.category.infra.serializer import CategorySerializer
 from core.category.domain.repositories import CategoryRepository
-from django_app.category.tests.helpers import init_category_resource_all_none
 from django_app import container
 from django_app.category.api import CategoryResource
+from django_app.category.tests.api.helpers import mock_category_serializer_validators
 from django_app.category.tests.fixture.categories_api_fixtures import (
-    UpdateCategoryApiFixture, HttpExpect
-)
-from rest_framework.exceptions import ErrorDetail, ValidationError
+    HttpExpect, UpdateCategoryApiFixture)
+from django_app.category.tests.helpers import init_category_resource_all_none
 
 
 @pytest.mark.django_db
@@ -38,29 +36,22 @@ class TestCategoryResourcePutMethodInt:
             self.resource.put(request, uuid_value)
         assert assert_exception.value.detail == http_expect.exception.detail
 
-    @pytest.mark.parametrize('http_expect', UpdateCategoryApiFixture.arrange_for_entity_validation_error())
+    @pytest.mark.parametrize('http_expect',
+                             UpdateCategoryApiFixture.arrange_for_entity_validation_error())
     def test_entity_validation_error(self, http_expect: HttpExpect):
         category = Category.fake().a_category().build()
         self.repo.insert(category)
-        with (
-            patch.object(CategorySerializer, 'is_valid') as mock_is_valid,
-            patch.object(
-                CategorySerializer,
-                'validated_data',
-                new_callable=PropertyMock,
-                return_value=http_expect.request.body
-            ) as mock_validated_data
-        ):
+        with mock_category_serializer_validators(http_expect) as mockSerializer:
             request = make_request(
                 http_method='put',
                 send_data=http_expect.request.body
             )
             with pytest.raises(http_expect.exception.__class__) as assert_exception:
                 self.resource.put(request, category.id)
-            mock_is_valid.assert_called()
-            mock_validated_data.assert_called()
+            mockSerializer.mock_is_valid.assert_called()
+            mockSerializer.mock_validated_data.assert_called()
             assert assert_exception.value.error == http_expect.exception.error
-    
+
     def test_throw_exception_when_uuid_is_invalid(self):
         request = make_request(http_method='put')
         with pytest.raises(ValidationError) as assert_exception:

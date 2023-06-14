@@ -1,11 +1,13 @@
 
 import datetime as dt
 import unittest
+
+import pytest
+from django.utils import timezone
+
 from core.category.domain.entities import Category
 from core.category.infra.mapper import CategoryDjangoModelMapper
 from django_app.category.models import CategoryModel
-from django.utils import timezone
-import pytest
 
 
 @pytest.mark.django_db
@@ -27,7 +29,7 @@ class TestCategoryDjangoModelMapper(unittest.TestCase):
         self.assertEqual(entity.description, "Movie Description")
         self.assertEqual(entity.is_active, True)
         self.assertEqual(entity.created_at, created_at)
-        
+
     def test_to_model(self):
         created_at = dt.datetime.now(dt.timezone.utc)
         entity = Category(

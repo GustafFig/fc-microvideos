@@ -1,16 +1,16 @@
-import unittest
-import pytest
 import datetime
-from core.category.application.dto import CategoryOutput, CategoryOutputMapper
-from core.category.application.usecase import (
-    CreateCategoryUseCase,
-    GetCategoryUseCase,
-    ListCategoriesUseCase,
-    UpdateCategoryUseCase,
-    DeleteCategoryUseCase
-)
-from core.category.domain.entities import Category
+import unittest
+
+import pytest
+
 from core.__seedwork.domain.exceptions import EntityNotFound
+from core.category.application.dto import CategoryOutput, CategoryOutputMapper
+from core.category.application.usecase import (CreateCategoryUseCase,
+                                               DeleteCategoryUseCase,
+                                               GetCategoryUseCase,
+                                               ListCategoriesUseCase,
+                                               UpdateCategoryUseCase)
+from core.category.domain.entities import Category
 from django_app.category.repositories import CategoryDjangoRepository
 
 
@@ -402,5 +402,5 @@ class TestDeleteCategoryUseCaseInt(unittest.TestCase):
             self.repo.find_by_id(entity.id)
         self.assertEqual(
             assert_error.exception.args[0],
-            f"Category not found"
+            "Category not found"
         )

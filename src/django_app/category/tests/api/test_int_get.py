@@ -1,18 +1,16 @@
-#pylint: disable=unexpected-keyword-arg
+# pylint: disable=unexpected-keyword-arg
+from urllib.parse import urlencode
+
 import pytest
 
 from core.__seedwork.infra.testing_helpers import make_request
-
-from urllib.parse import urlencode
-
 from core.category.domain.entities import Category
 from core.category.domain.repositories import CategoryRepository
 from django_app import container
 from django_app.category.api import CategoryResource
-from django_app.category.tests.helpers import init_category_resource_all_none
 from django_app.category.tests.fixture.categories_api_fixtures import (
-    ListCategoriesApiFixture, SearchExpectation
-)
+    ListCategoriesApiFixture, SearchExpectation)
+from django_app.category.tests.helpers import init_category_resource_all_none
 
 
 @pytest.mark.django_db
@@ -48,9 +46,9 @@ class TestCategoryResourceGetMethodInt:
 
         assert response.status_code == 200
         assert response.data == {
-            'data': [self.serialize_category(category)['data'] for category in expected.entities],
+            'data': [self.serialize_category(category) for category in expected.entities],
             'meta': expected.meta,
         }
 
     def serialize_category(self, category: Category):
-        return CategoryResource.category_to_response(category)
+        return CategoryResource.category_to_response(category)['data']

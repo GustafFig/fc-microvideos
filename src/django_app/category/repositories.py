@@ -1,5 +1,5 @@
 # pylint: disable=no-member,import-outside-toplevel
-from typing import Optional, List, TYPE_CHECKING, Type
+from typing import TYPE_CHECKING, List, Optional, Type
 
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator

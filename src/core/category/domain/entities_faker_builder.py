@@ -1,10 +1,12 @@
-
-# pylint:  disable=unexpected-keyword-arg
-from datetime import datetime
+# pylint:  disable=unexpected-keyword-arg,too-many-public-methods
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any, Callable, Generic, List, TypeVar
+
 from faker import Faker
+
 from core.__seedwork.domain.value_objects import UniqueEntityId
+
 from .entities import Category
 
 T = TypeVar('T')
@@ -123,7 +125,7 @@ class CategoryFakerBuilder(Generic[T]):
     def unique_entity_id(self) -> UniqueEntityId:
         value = self.__call_factory(self.__unique_entity_id, 0)
         if value is None:
-            raise Exception(
+            raise Exception(  # pylint: disable=broad-exception-raised
                 'Prop unique_entity_id not have a factory, use "with methods"'
             )
         return value
@@ -144,7 +146,7 @@ class CategoryFakerBuilder(Generic[T]):
     def created_at(self) -> datetime:
         value = self.__call_factory(self.__created_at, 0)
         if value is None:
-            raise Exception(
+            raise Exception(  # pylint: disable=broad-exception-raised
                 'Prop created_at not have a factory, use "with methods"'
             )
         return value

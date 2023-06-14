@@ -1,8 +1,10 @@
 # Evita de mexer no repositório se tiver um dado novo e ou mais simples
 # Dado novo
-# pylint: disable=mport-outside-toplevel
+# pylint: disable=import-outside-toplevel
 from typing import TYPE_CHECKING
-from core.__seedwork.domain.exceptions import LoadValidationException, ValidationException
+
+from core.__seedwork.domain.exceptions import (LoadValidationException,
+                                               ValidationException)
 from core.__seedwork.domain.value_objects import UniqueEntityId
 from core.category.domain.entities import Category
 
@@ -11,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class CategoryDjangoModelMapper:
-    
+
     @staticmethod
     def to_entity(model: 'CategoryModel') -> Category:
         try:

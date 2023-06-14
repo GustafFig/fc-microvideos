@@ -5,6 +5,7 @@ from core.__seedwork.domain.repositories import SearchResult
 
 Item = TypeVar('Item')
 
+
 @dataclass(frozen=True, slots=True)
 class PaginationOutput(Generic[Item]):
     items: List[Item]

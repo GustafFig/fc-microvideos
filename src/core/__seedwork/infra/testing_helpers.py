@@ -1,9 +1,11 @@
 from typing import Any, Dict, Literal
+
+from django.http.request import HttpRequest
 from rest_framework.request import Request as DrfRequest
 from rest_framework.test import APIRequestFactory
-from django.http.request import HttpRequest
 
 HTTP_VERB = Literal['get', 'post', 'put', 'delete']
+
 
 def make_request(http_method: HTTP_VERB, url: str = '/', send_data: Any = None) -> DrfRequest:
     request_factory = APIRequestFactory()

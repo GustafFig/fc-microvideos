@@ -20,6 +20,7 @@ class ValidationException(Exception):
         self.error = error
         super().__init__('Validation Error')
 
+
 class LoadValidationException(Exception):
     """The Exception for domain validations"""
 

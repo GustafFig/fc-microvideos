@@ -1,6 +1,8 @@
 # pylint: disable=abstract-method
 from rest_framework import serializers
-from core.__seedwork.infra.serializers import ISO_8601, CollectionSerializer, ResourceSerializer
+
+from core.__seedwork.infra.serializers import (ISO_8601, CollectionSerializer,
+                                               ResourceSerializer)
 
 
 class CategorySerializer(ResourceSerializer):

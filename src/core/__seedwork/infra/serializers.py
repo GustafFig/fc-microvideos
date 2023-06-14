@@ -1,27 +1,29 @@
-from core.__seedwork.application.dto import PaginationOutput
 from rest_framework import serializers
 
+from core.__seedwork.application.dto import PaginationOutput
 
 ISO_8601 = '%Y-%m-%dT%H:%M:%S'
 
 
-class UUIDSerializer(serializers.Serializer): # pylint: disable=abstract-method
+class UUIDSerializer(serializers.Serializer):  # pylint: disable=abstract-method
     id = serializers.UUIDField()
 
 
-class PaginationSerializer(serializers.Serializer): # pylint: disable=abstract-method
+class PaginationSerializer(serializers.Serializer):  # pylint: disable=abstract-method
     total = serializers.IntegerField()
     page = serializers.IntegerField()
     per_page = serializers.IntegerField()
     last_page = serializers.IntegerField()
 
-class ResourceSerializer(serializers.Serializer): # pylint: disable=abstract-method
+
+class ResourceSerializer(serializers.Serializer):  # pylint: disable=abstract-method
     def to_representation(self, instance):
         data = super().to_representation(instance)
         print(data)
         return {
             'data': data
         }
+
 
 class CollectionSerializer(serializers.ListSerializer):  # pylint: disable=abstract-method
     pagination: PaginationOutput

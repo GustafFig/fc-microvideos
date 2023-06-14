@@ -1,17 +1,16 @@
 # pylint: disable=protected-access
-from unittest.mock import PropertyMock, patch
 import pytest
 
-from core.__seedwork.infra.testing_helpers import assert_response_data, make_request
-from core.category.infra.serializer import CategorySerializer
+from core.__seedwork.infra.testing_helpers import (assert_response_data,
+                                                   make_request)
 from core.category.domain.repositories import CategoryRepository
-from django_app.category.tests.helpers import init_category_resource_all_none
 from django_app import container
 from django_app.category.api import CategoryResource
 from django_app.category.repositories import CategoryDjangoRepository
+from django_app.category.tests.api.helpers import mock_category_serializer_validators
 from django_app.category.tests.fixture.categories_api_fixtures import (
-    CreateCategoryApiFixture, HttpExpect
-)
+    CreateCategoryApiFixture, HttpExpect)
+from django_app.category.tests.helpers import init_category_resource_all_none
 
 
 @pytest.mark.django_db
@@ -51,24 +50,16 @@ class TestCategoryResourcePostMethodInt:
         """
         Remove the http validation, that is previous domain validation
         """
-        with (
-            patch.object(CategorySerializer, 'is_valid') as mock_is_valid,
-            patch.object(
-                CategorySerializer,
-                'validated_data',
-                new_callable=PropertyMock,
-                return_value=http_expect.request.body
-            ) as mock_validated_data
-        ):
+        with mock_category_serializer_validators(http_expect) as mockSerializer:
             request = make_request(
                 http_method='post',
                 send_data=http_expect.request.body
             )
             with pytest.raises(http_expect.exception.__class__) as assert_exception:
                 self.resource.post(request)
-            mock_is_valid.assert_called()
-            mock_validated_data.assert_called()
-            assert assert_exception.value.error == http_expect.exception.error
+        mockSerializer.mock_is_valid.assert_called()
+        mockSerializer.mock_validated_data.assert_called()
+        assert assert_exception.value.error == http_expect.exception.error
 
     @pytest.mark.parametrize(
         'http_expect', CreateCategoryApiFixture.arrange_for_invalid_requests()

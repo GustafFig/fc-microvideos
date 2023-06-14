@@ -2,8 +2,10 @@
 from abc import ABC
 
 from core.__seedwork.domain.repositories import SearchableRepositoryInterface
-from core.__seedwork.domain.repositories import SearchParams as DefaultSearchParams
-from core.__seedwork.domain.repositories import SearchResult as DefaultSearchResult
+from core.__seedwork.domain.repositories import \
+    SearchParams as DefaultSearchParams
+from core.__seedwork.domain.repositories import \
+    SearchResult as DefaultSearchResult
 
 from .entities import Category
 

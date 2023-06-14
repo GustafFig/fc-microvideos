@@ -2,8 +2,8 @@
 import unittest
 
 import pytest
-from django.utils import timezone
 from django.db import models
+from django.utils import timezone
 
 from django_app.category.models import CategoryModel
 

@@ -1,7 +1,8 @@
 from dataclasses import asdict, dataclass
 from typing import List, Optional
-from core.__seedwork.application.dto import PaginationOutput, PaginationOutputMapper
 
+from core.__seedwork.application.dto import (PaginationOutput,
+                                             PaginationOutputMapper)
 from core.__seedwork.application.usecases import UseCase
 from core.__seedwork.domain.exceptions import EntityNotFound, MissingParameter
 from core.category.application.dto import CategoryOutput, CategoryOutputMapper

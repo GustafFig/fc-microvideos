@@ -1,18 +1,18 @@
 # pylint: disable=no-member
-from typing import List
-import unittest
 import datetime as dt
+import unittest
+from typing import List
 
+import pytest
 from django.utils import timezone
 from model_bakery import baker
 from model_bakery.utils import seq
-import pytest
 
-from core.category.domain.entities import Category
-from core.category.infra.mapper import CategoryDjangoModelMapper
-from core.category.domain.repositories import CategoryRepository
 from core.__seedwork.domain.exceptions import EntityNotFound
 from core.__seedwork.domain.value_objects import UniqueEntityId
+from core.category.domain.entities import Category
+from core.category.domain.repositories import CategoryRepository
+from core.category.infra.mapper import CategoryDjangoModelMapper
 from django_app.category.models import CategoryModel
 from django_app.category.repositories import CategoryDjangoRepository
 

@@ -3,21 +3,21 @@
 from dataclasses import dataclass
 from typing import Callable, Optional
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
+from rest_framework.response import Response
+from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
+                                   HTTP_204_NO_CONTENT)
+from rest_framework.views import APIView
 
 from core.__seedwork.infra.serializers import UUIDSerializer
 from core.category.application.dto import CategoryOutput
-from core.category.application.usecase import (
-    CreateCategoryUseCase,
-    DeleteCategoryUseCase,
-    GetCategoryUseCase,
-    ListCategoriesUseCase,
-    UpdateCategoryUseCase,
-)
-from core.category.infra.serializer import CategorySerializer, CategoryCollectionSerializer
+from core.category.application.usecase import (CreateCategoryUseCase,
+                                               DeleteCategoryUseCase,
+                                               GetCategoryUseCase,
+                                               ListCategoriesUseCase,
+                                               UpdateCategoryUseCase)
+from core.category.infra.serializer import (CategoryCollectionSerializer,
+                                            CategorySerializer)
 
 
 @dataclass(slots=True)
@@ -46,7 +46,6 @@ class CategoryResource(APIView):
         output = self.list_use_case()(input_param)
         data = CategoryCollectionSerializer(instance=output).data
         return Response(data)
-
 
     def get_object(self, id: str):
         CategoryResource.validate_id(id)

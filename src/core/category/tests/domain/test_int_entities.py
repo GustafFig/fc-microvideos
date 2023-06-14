@@ -48,9 +48,9 @@ class TestCategoryIntegration(unittest.TestCase):
             with self.assertRaises(ValidationException) as assert_error:
                 Category(name=None, is_active=invalid)  # type: ignore
             self.assertEqual(['Must be a valid boolean.'],
-                            assert_error.exception.error['is_active'])
+                             assert_error.exception.error['is_active'])
             self.assertEqual(['This field may not be null.'],
-                            assert_error.exception.error['name'])
+                             assert_error.exception.error['name'])
 
     def test_create_with_valid_cases(self):
 

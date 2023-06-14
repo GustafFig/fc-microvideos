@@ -6,7 +6,8 @@ from typing import Dict
 
 from rest_framework.serializers import DateTimeField, Serializer
 
-from core.__seedwork.domain.validators import (DRFValidator, StrictBooleanField,
+from core.__seedwork.domain.validators import (DRFValidator,
+                                               StrictBooleanField,
                                                StrictCharField, ValidatorRules,
                                                ValidatorRulesValidator)
 

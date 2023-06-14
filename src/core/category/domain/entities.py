@@ -7,7 +7,6 @@ from core.__seedwork.domain.entities import Entity, ToggleIsActive
 from core.__seedwork.domain.exceptions import ValidationException
 from core.category.domain.validators import CategoryValidatorFactory
 
-
 if t.TYPE_CHECKING:
     from .entities_faker_builder import CategoryFakerBuilder
 
@@ -43,5 +42,6 @@ class Category(Entity, ToggleIsActive):
 
     @staticmethod
     def fake() -> 'CategoryFakerBuilder':
-        from .entities_faker_builder import CategoryFakerBuilder # pylint: disable=import-outside-toplevel
+        from .entities_faker_builder import \
+            CategoryFakerBuilder  # pylint: disable=import-outside-toplevel
         return CategoryFakerBuilder
