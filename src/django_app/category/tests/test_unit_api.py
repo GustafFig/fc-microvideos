@@ -122,7 +122,8 @@ class TestCategoryResourceUnit(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    def test_get_method(self):
+    @patch.object(CategoryResource, 'validate_id')
+    def test_get_method(self, mock_validate_id):
         return_value = GetCategoryUseCase.Output(
             id="fakeid",
             name="Movie",
@@ -163,8 +164,10 @@ class TestCategoryResourceUnit(unittest.TestCase):
 
         self.assertEqual(mock_list_use_case.call_count, 0)
         resource.get_object.assert_called_once_with(id="fakeid")
+        mock_validate_id.assert_called_once_with('fakeid')
 
-    def test_update_method(self):
+    @patch.object(CategoryResource, 'validate_id')
+    def test_update_method(self, mock_validate_id):
         send_data = {
             "name": "Movie",
             "description": "description",
@@ -185,6 +188,7 @@ class TestCategoryResourceUnit(unittest.TestCase):
 
         request = make_request('put', '/categories/fakeid', send_data)
         response = resource.put(request, id="fakeid")
+        mock_validate_id.assert_called_once_with('fakeid')
         mock_update_use_case.assert_called_once_with(
             UpdateCategoryUseCase.Input(
                 id="fakeid",
@@ -202,7 +206,8 @@ class TestCategoryResourceUnit(unittest.TestCase):
             "created_at": mock_update_use_case.return_value.created_at,
         })
 
-    def test_delete_method(self):
+    @patch.object(CategoryResource, 'validate_id')
+    def test_delete_method(self, mock_validate_id):
         return_value = DeleteCategoryUseCase.Output()
         mock_delete_use_case = Mock(DeleteCategoryUseCase, return_value=return_value)
         resource = init_category_resource_all_none(
@@ -212,6 +217,7 @@ class TestCategoryResourceUnit(unittest.TestCase):
 
         request = make_request('delete', '/categories/fakeid')
         response = resource.delete(request, id="fakeid")
+        mock_validate_id.assert_called_once_with('fakeid')
         mock_delete_use_case.assert_called_once_with(
             DeleteCategoryUseCase.Input(id="fakeid")
         )

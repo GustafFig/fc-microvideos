@@ -142,7 +142,7 @@ class UpdateCategoryUseCase(UseCase):
     class Input:
         id: str  # pylint: disable=invalid-name
         name: str
-        description: str
+        description: str = Category.get_field('description').default
         is_active: Optional[bool] = Category.get_field('is_active').default
 
     class Output(CategoryOutput):

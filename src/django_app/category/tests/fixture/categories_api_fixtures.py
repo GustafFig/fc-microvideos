@@ -342,7 +342,7 @@ class UpdateCategoryApiFixture:
     def arrange_for_save():
         data = [
             HttpExpect(
-                request=Request(body={'name': "Movie"}),
+                request=Request(body={'name': "Movie", 'description': None}),
                 response=Response(body={
                     'name': 'Movie',
                     'description': None,
@@ -359,7 +359,7 @@ class UpdateCategoryApiFixture:
                 })
             ),
             HttpExpect(
-                request=Request(body={'name': "Movie", "is_active": False}),
+                request=Request(body={'name': "Movie", 'description': None, "is_active": False}),
                 response=Response(body={
                     'name': 'Movie',
                     'description': None,
@@ -367,7 +367,7 @@ class UpdateCategoryApiFixture:
                 })
             ),
             HttpExpect(
-                request=Request(body={'name': "Movie", "is_active": True}),
+                request=Request(body={'name': "Movie", 'description': None, "is_active": True}),
                 response=Response(body={
                     'name': 'Movie',
                     'description': None,

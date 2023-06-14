@@ -32,6 +32,7 @@ class CategoryResource(APIView):
     def post(self, req: Request):
         serializer = CategorySerializer(data=req.data)
         serializer.is_valid(raise_exception=True)
+
         input_param = CreateCategoryUseCase.Input(**serializer.validated_data)
         method = self.create_use_case()
         output = method(input_param)
@@ -47,19 +48,26 @@ class CategoryResource(APIView):
         return Response(body)
 
     def get_object(self, id: str):
-        # TODO: add validate_id here
+        CategoryResource.validate_id(id)
         input_param = GetCategoryUseCase.Input(id=id)
         output = self.get_use_case()(input_param)
         body = self.category_to_response(output)
         return Response(body, HTTP_200_OK)
 
-    def put(self, req: Request, id: str):
-        input_param = UpdateCategoryUseCase.Input(**req.data, id=id)
+    def put(self, req: Request, id: str):  # pylint: disable=redefined-builtin,invalid-name
+        CategoryResource.validate_id(id)
+
+        serializer = CategorySerializer(data=req.data)
+        serializer.is_valid(raise_exception=True)
+        input_param = UpdateCategoryUseCase.Input(
+            **{'id': id, **serializer.validated_data}
+        )
         output = self.update_use_case()(input_param)
         body = self.category_to_response(output)
         return Response(body, HTTP_200_OK)
 
     def delete(self, _req: Request, id: str):
+        self.validate_id(id)
         input_param = DeleteCategoryUseCase.Input(id=id)
         self.delete_use_case()(input_param)
         return Response(status=HTTP_204_NO_CONTENT)
