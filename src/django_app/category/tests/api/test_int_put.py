@@ -21,10 +21,10 @@ class TestCategoryResourcePutMethodInt:
 
     @classmethod
     def setup_class(cls):
-        cls.repo = container.Container.repository_category_django_orm()
+        cls.repo = container.repository_category_django_orm()
         cls.resource = init_category_resource_all_none(
             CategoryResource,
-            update_use_case=container.Container.use_case_category_update_category,
+            update_use_case=container.use_case_category_update_category,
         )
 
     @pytest.mark.parametrize('http_expect', UpdateCategoryApiFixture.arrange_for_invalid_requests())

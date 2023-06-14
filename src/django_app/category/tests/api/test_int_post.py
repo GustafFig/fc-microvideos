@@ -24,7 +24,7 @@ class TestCategoryResourcePostMethodInt:
         cls.repo = CategoryDjangoRepository()
         cls.resource = init_category_resource_all_none(
             CategoryResource,
-            create_use_case=container.Container.use_case_category_create_category
+            create_use_case=container.use_case_category_create_category
         )
 
     @pytest.mark.parametrize(

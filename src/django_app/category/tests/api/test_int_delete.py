@@ -18,10 +18,10 @@ class TestCategoryResourceDeleteMethodInt:
 
     @classmethod
     def setup_class(cls):
-        cls.repo = container.Container.repository_category_django_orm()
+        cls.repo = container.repository_category_django_orm()
         cls.resource = init_category_resource_all_none(
             CategoryResource,
-            delete_use_case=container.Container.use_case_category_delete_category,
+            delete_use_case=container.use_case_category_delete_category,
         )
 
     def test_throw_exception_when_uuid_is_invalid(self):

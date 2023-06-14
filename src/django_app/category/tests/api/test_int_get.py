@@ -21,10 +21,10 @@ class TestCategoryResourceGetMethodInt:
 
     @classmethod
     def setup_class(cls):
-        cls.repo = container.Container.repository_category_django_orm()
+        cls.repo = container.repository_category_django_orm()
         cls.resource = init_category_resource_all_none(
             CategoryResource,
-            list_use_case=container.Container.use_case_category_list_category,
+            list_use_case=container.use_case_category_list_category,
         )
 
     @pytest.mark.parametrize('item', ListCategoriesApiFixture.arrange_incremented_with_created_at())
