@@ -22,6 +22,8 @@ dependencies = [
     "django>=4.2.1",
     "django-extensions>=3.2.1",
     "dependency-injector>=4.41.0",
+    "pydantic[dotenv]>=1.10.9",
+    "dj-database-url>=2.0.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

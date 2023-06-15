@@ -6,3 +6,8 @@ micro_videos.egg-info
 build
 dist
 db.sqlite3
+
+# envs
+envs/.env
+envs/.env.test
+envs/.env.e2e
