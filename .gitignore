@@ -7,6 +7,8 @@ build
 dist
 db.sqlite3
 
+.docker/dbdata
+docker-compose.override.yaml
 # envs
 envs/.env
 envs/.env.test

@@ -24,6 +24,7 @@ dependencies = [
     "dependency-injector>=4.41.0",
     "pydantic[dotenv]>=1.10.9",
     "dj-database-url>=2.0.0",
+    "mysqlclient>=2.1.1",
 ]
 requires-python = ">=3.10"
 readme = "README.md"

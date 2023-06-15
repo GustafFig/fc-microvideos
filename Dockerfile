@@ -7,7 +7,9 @@ RUN apt update && apt install -y --no-install-recommends \
                                   zsh \
                                   curl \
                                   wget \
-                                  vim
+                                  vim \
+                                  gcc \
+                                  libmariadb-dev
 
 # cria um usuário chamado python
 RUN useradd -ms /bin/bash python

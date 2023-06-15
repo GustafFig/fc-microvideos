@@ -9,3 +9,23 @@ services:
     container_name: codeflix_micro_videos
     volumes:
       - .:/home/python/app
+
+  db:
+    image: mysql:8.0.30-debian
+    container_name: codeflix_micro_python_db
+    profiles:
+      - dev
+    environment:
+      - MYSQL_DATABASE=micro-videos
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ./.docker/dbdata:/var/lib/mysql:delegated
+
+  db_test:
+    image: mysql:8.0.30-debian
+    container_name: micro-videos-python-db-test
+    environment:
+      - MYSQL_DATABASE=micro-videos-test
+      - MYSQL_ROOT_PASSWORD=root
+    tmpfs:
+      - /var/lib/mysql
