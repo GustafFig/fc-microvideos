@@ -304,6 +304,30 @@ class CreateCategoryApiFixture:
                     'description': faker.description,
                     'is_active': True,
                 })
+            ),
+            HttpExpect(
+                request=Request(body={
+                    'name': faker.name,
+                    'description': None,
+                    'is_active': True,
+                }),
+                response=Response(body={
+                    'name': faker.name,
+                    'description': None,
+                    'is_active': True,
+                })
+            ),
+            HttpExpect(
+                request=Request(body={
+                    'name': faker.name,
+                    'description': None,
+                    'is_active': False,
+                }),
+                response=Response(body={
+                    'name': faker.name,
+                    'description': None,
+                    'is_active': False,
+                })
             )
         ]
         return [pytest.param(item, id=str(item.request.body)) for item in data]
