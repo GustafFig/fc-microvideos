@@ -53,12 +53,12 @@ class TestCategoryResourceDeletehodE2E:
         category = Category.fake().a_category().build()
         self.repo.insert(category)
         response = self.client_http.delete(
-            f'/categories/{category.id}/', data=http_expect.request.body, format="json",
+            f'/categories/{category.id}/', data={}, format="json",
         )
         assert response.status_code == 204
 
         response = self.client_http.delete(
-            f'/categories/{category.id}/', data=http_expect.request.body, format="json",
+            f'/categories/{category.id}/', data={}, format="json",
         )
         assert response.status_code == 404
         assert response.content == JSONRenderer().render({
