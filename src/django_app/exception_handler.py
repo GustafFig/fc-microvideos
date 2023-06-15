@@ -1,8 +1,10 @@
-from core.__seedwork.domain.exceptions import ValidationException
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from rest_framework.views import \
+    exception_handler as rest_framework_exception_handler
 
-from rest_framework.views import exception_handler as rest_framework_exception_handler
+from core.__seedwork.domain.exceptions import (EntityNotFound,
+                                               ValidationException)
 
 
 def handler_serializer_validation_error(exception: ValidationError, context):
@@ -17,9 +19,16 @@ def handler_serializer_validation_exception(
     response = Response(exception.error, status=422)
     return response
 
+def handler_serializer_entity_not_found(
+    exception: EntityNotFound, context,   # pylint: disable=unused-argument
+):
+    response = Response({"message": str(exception)}, status=404)
+    return response
+
 handlers = {
     ValidationError: handler_serializer_validation_error,
     ValidationException: handler_serializer_validation_exception,
+    EntityNotFound: handler_serializer_entity_not_found,
 }
 
 

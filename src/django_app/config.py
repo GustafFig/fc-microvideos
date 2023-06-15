@@ -1,9 +1,9 @@
 import os
 from pathlib import Path
 from typing import Dict, List
-from pydantic import BaseSettings, config, validator, Field
-import dj_database_url
 
+import dj_database_url
+from pydantic import BaseSettings, Field, config, validator
 
 _ENV_FOLDER = Path(__file__).resolve().parent.parent.parent / 'envs'
 APP_ENV = os.getenv('APP_ENV')

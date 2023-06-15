@@ -7,7 +7,8 @@ from core.category.domain.entities import Category
 from core.category.domain.repositories import CategoryRepository
 from django_app import container
 from django_app.category.api import CategoryResource
-from django_app.category.tests.api.helpers import mock_category_serializer_validators
+from django_app.category.tests.api.helpers import \
+    mock_category_serializer_validators
 from django_app.category.tests.fixture.categories_api_fixtures import (
     HttpExpect, UpdateCategoryApiFixture)
 from django_app.category.tests.helpers import init_category_resource_all_none

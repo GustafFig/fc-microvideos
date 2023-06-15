@@ -1,6 +1,4 @@
 import pytest
-from core.__seedwork.infra.testing_helpers import make_request
-from django_app.category.tests.api.helpers import mock_category_serializer_validators
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.test import APIClient
@@ -8,7 +6,10 @@ from rest_framework.test import APIClient
 from core.category.domain.repositories import CategoryRepository
 from django_app import container
 from django_app.category.api import CategoryResource
-from django_app.category.tests.fixture.categories_api_fixtures import CreateCategoryApiFixture, HttpExpect
+from django_app.category.tests.api.helpers import \
+    mock_category_serializer_validators
+from django_app.category.tests.fixture.categories_api_fixtures import (
+    CreateCategoryApiFixture, HttpExpect)
 
 
 @pytest.mark.group('e2e')

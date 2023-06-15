@@ -3,7 +3,8 @@ from contextlib import contextmanager
 from unittest.mock import PropertyMock, patch
 
 from core.category.infra.serializer import CategorySerializer
-from django_app.category.tests.fixture.categories_api_fixtures import HttpExpect
+from django_app.category.tests.fixture.categories_api_fixtures import \
+    HttpExpect
 
 
 @contextmanager

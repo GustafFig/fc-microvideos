@@ -9,7 +9,7 @@ urlpatterns = [
         create_use_case=container.use_case_category_create_category,
         list_use_case=container.use_case_category_list_category,
     )),
-    path('categories/<uuid:id>/', CategoryResource.as_view(
+    path('categories/<id>/', CategoryResource.as_view(
         get_use_case=container.use_case_category_get_category,
         update_use_case=container.use_case_category_update_category,
         delete_use_case=container.use_case_category_delete_category,
