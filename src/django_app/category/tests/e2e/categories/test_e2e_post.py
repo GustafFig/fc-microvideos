@@ -21,12 +21,19 @@ class TestCategoriesPostE2E:
         cls.client_http = APIClient()
         cls.category_repository = container.repository_category_django_orm()
 
+    def make_requisition(self, data) -> Response:
+        return self.client_http.post('/categories/', data=data, format="json")
+
+    @pytest.mark.parametrize('http_expect', CreateCategoryApiFixture.arrange_for_invalid_requests())
+    def test_invalid_request(self, http_expect: HttpExpect):
+        response = self.make_requisition(http_expect.request.body)
+        assert response.status_code == 422
+        assert response.content == JSONRenderer().render(http_expect.exception.detail)
+
     @pytest.mark.parametrize('http_expect', CreateCategoryApiFixture.arrange_for_save())
     def test_post(self, http_expect: HttpExpect):
-        client_http = APIClient()
-        response: Response = client_http.post(
-            '/categories/', data=http_expect.request.body, format="json"
-        )
+        response = self.make_requisition(http_expect.request.body)
+
         assert response.status_code == 201
         assert "data" in response.data
         data = response.data["data"]
