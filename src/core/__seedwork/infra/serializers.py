@@ -19,7 +19,6 @@ class PaginationSerializer(serializers.Serializer):  # pylint: disable=abstract-
 class ResourceSerializer(serializers.Serializer):  # pylint: disable=abstract-method
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        print(data)
         return {
             'data': data
         }
