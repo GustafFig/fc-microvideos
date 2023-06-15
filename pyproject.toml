@@ -8,6 +8,7 @@ dev = [
     "pytest-django>=4.5.2",
     "model-bakery>=1.11.0",
     "faker>=18.10.1",
+    "colorama>=0.4.6",
 ]
 
 [project]

@@ -319,7 +319,7 @@ summary = "Module for decorators, wrappers and monkey patching."
 lock_version = "4.2"
 cross_platform = true
 groups = ["default", "dev"]
-content_hash = "sha256:97bdabf5ad7f20cfdae296451a9a90f3e80c1a8113babaa1114808b21be2f4b8"
+content_hash = "sha256:3847f86a0ef6804c20e3cc533663f4396f77e521eb3eb5cec44d915a7367cf1e"
 
 [metadata.files]
 "asgiref 3.6.0" = [
